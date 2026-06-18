@@ -9,28 +9,35 @@ const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GE
  * Calls Gemini with a PDF (base64) + a text prompt.
  * Returns the raw text response.
  */
-export const callGeminiWithPdf = async (pdfBase64, prompt) => {
+export const callGeminiWithPdf = async (pdfBase64, prompt, options = {}) => {
+  const { useGoogleSearch = false } = options;
+  const body = {
+    contents: [
+      {
+        parts: [
+          {
+            inline_data: {
+              mime_type: "application/pdf",
+              data: pdfBase64,
+            },
+          },
+          { text: prompt },
+        ],
+      },
+    ],
+  };
+
+  if (useGoogleSearch) {
+    body.tools = [{ google_search: {} }];
+  }
+
   const response = await fetch(GEMINI_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "x-goog-api-key": process.env.GEMINI_API_KEY,
     },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            {
-              inline_data: {
-                mime_type: "application/pdf",
-                data: pdfBase64,
-              },
-            },
-            { text: prompt },
-          ],
-        },
-      ],
-    }),
+    body: JSON.stringify(body),
   });
 
   const data = await response.json();

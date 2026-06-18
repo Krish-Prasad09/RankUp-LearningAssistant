@@ -1,28 +1,44 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import UploadModal from "../components/UploadModal";
-import { listDocuments, renameDocument, deleteDocument } from "../services/api";
+import { listDocuments, listFolders, createFolder, deleteDocument, deleteFolder } from "../services/api";
+
+const FOLDER_GRADIENTS = [
+  "from-indigo-500 to-purple-600",
+  "from-blue-500 to-cyan-500",
+  "from-emerald-500 to-teal-600",
+  "from-orange-500 to-amber-500",
+  "from-pink-500 to-rose-500",
+  "from-violet-500 to-indigo-600",
+  "from-cyan-500 to-blue-600",
+  "from-rose-500 to-pink-600",
+];
 
 export default function DocumentsPage() {
+  const [view, setView] = useState("root");
   const [documents, setDocuments] = useState([]);
+  const [folders, setFolders] = useState([]);
+  const [currentPath, setCurrentPath] = useState("/");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showUpload, setShowUpload] = useState(false);
-  const [renamingId, setRenamingId] = useState(null);
-  const [renameValue, setRenameValue] = useState("");
+  const [newFolderName, setNewFolderName] = useState("");
+  const [creatingFolder, setCreatingFolder] = useState(false);
+  const [deletingPath, setDeletingPath] = useState(null);
   const navigate = useNavigate();
-
   const sentinelRef = useRef(null);
 
-  const loadPage = useCallback(async (pageToLoad) => {
+  const loadDocuments = useCallback(async (pageToLoad, path) => {
     setLoading(true);
     setError("");
     try {
-      const data = await listDocuments(pageToLoad, 10);
-      setDocuments((prev) => (pageToLoad === 1 ? data.documents : [...prev, ...data.documents]));
+      const data = await listDocuments(pageToLoad, 10, path);
+      setDocuments((prev) =>
+        pageToLoad === 1 ? data.documents : [...prev, ...data.documents]
+      );
       setHasMore(data.hasMore);
       setPage(pageToLoad);
     } catch (err) {
@@ -32,52 +48,64 @@ export default function DocumentsPage() {
     }
   }, []);
 
+  const loadFolders = useCallback(async (path) => {
+    try {
+      const data = await listFolders(path);
+      setFolders(data.folders || []);
+    } catch (err) {
+      console.error("Error loading folders:", err);
+    }
+  }, []);
+
   useEffect(() => {
-    loadPage(1);
-  }, [loadPage]);
+    loadDocuments(1, currentPath);
+    loadFolders(currentPath);
+  }, [currentPath, loadDocuments, loadFolders]);
 
   useEffect(() => {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
-          loadPage(page + 1);
+          loadDocuments(page + 1, currentPath);
         }
       },
       { rootMargin: "200px" }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasMore, loading, page, loadPage]);
+  }, [hasMore, loading, page, loadDocuments, currentPath]);
 
-  const handleUploaded = (doc) => {
-    setShowUpload(false);
-    navigate(`/documents/${doc._id}`);
-  };
-
-  const startRename = (doc, e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setRenamingId(doc._id);
-    setRenameValue(doc.name);
-  };
-
-  const submitRename = async (id) => {
-    const name = renameValue.trim();
-    setRenamingId(null);
+  const handleCreateFolder = async () => {
+    const name = newFolderName.trim();
     if (!name) return;
+    setCreatingFolder(true);
+    const path = currentPath === "/" ? `/${name}` : `${currentPath}/${name}`;
     try {
-      const data = await renameDocument(id, name);
-      setDocuments((prev) => prev.map((d) => (d._id === id ? { ...d, name: data.document.name } : d)));
+      await createFolder(path);
+      setNewFolderName("");
+      loadFolders(currentPath);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setCreatingFolder(false);
     }
   };
 
-  const handleDelete = async (id, e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (!confirm("Delete this document and all its flashcards, quizzes, and chat history?")) return;
+  const handleEnterFolder = (folderPath) => {
+    setCurrentPath(folderPath);
+    if (currentPath === "/") setView("folder");
+    setPage(1);
+    setDocuments([]);
+  };
+
+  const handleUploaded = () => {
+    setShowUpload(false);
+    loadDocuments(1, currentPath);
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this document and all its data?")) return;
     try {
       await deleteDocument(id);
       setDocuments((prev) => prev.filter((d) => d._id !== id));
@@ -86,138 +114,265 @@ export default function DocumentsPage() {
     }
   };
 
+  const handleDeleteFolder = async (path) => {
+    if (!confirm("Delete this folder and ALL documents inside? This cannot be undone!")) return;
+    setDeletingPath(path);
+    try {
+      await deleteFolder(path);
+      setFolders((prev) => prev.filter((f) => f.path !== path));
+      loadFolders(currentPath);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeletingPath(null);
+    }
+  };
+
+  const handleGoBack = () => {
+    if (currentPath === "/") return;
+    const parts = currentPath.split("/").filter(Boolean);
+    parts.pop();
+    const newPath = parts.length ? `/${parts.join("/")}` : "/";
+    setCurrentPath(newPath);
+    setView(newPath === "/" ? "root" : "folder");
+  };
+
+  const getFolderGradient = (index) => FOLDER_GRADIENTS[index % FOLDER_GRADIENTS.length];
+  const breadcrumb = currentPath.split("/").filter(Boolean);
+  const isRoot = view === "root";
+
   return (
-    <div>
-      <TopBar />
+    <div className="animate-fade-in text-slate-100">
+      <TopBar
+        title={isRoot ? "Documents" : breadcrumb[breadcrumb.length - 1]}
+        subtitle={isRoot ? "Organize your learning materials in folders" : currentPath}
+      />
+
       <div className="px-8 pb-10">
-        <div className="flex items-center justify-between mb-1">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">My Documents</h1>
-            <p className="text-slate-500">Manage and organize your learning materials</p>
+        {!isRoot && (
+          <button
+            onClick={handleGoBack}
+            className="flex items-center gap-1.5 text-sm text-slate-450 hover:text-indigo-400 mb-5 transition-colors cursor-pointer"
+          >
+            <BackIcon className="w-4 h-4" />
+            Back to {breadcrumb.length > 1 ? breadcrumb[breadcrumb.length - 2] : "All Folders"}
+          </button>
+        )}
+
+        {/* Create Folder */}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 shadow-sm">
+          <label className="text-slate-200 font-semibold mb-3 block">
+            {isRoot ? "Create New Subject / Folder" : "Create Subfolder"}
+          </label>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              placeholder={isRoot ? "e.g., Mathematics, Physics, Data Science..." : "e.g., Books, Tutorials, PYQs..."}
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
+              className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+            />
+            <button
+              onClick={handleCreateFolder}
+              disabled={creatingFolder || !newFolderName.trim()}
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {creatingFolder ? "Creating..." : "Create"}
+            </button>
           </div>
+        </div>
+
+        {/* Folders Grid */}
+        {folders.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-bold text-white mb-4">
+              {isRoot ? "Your Folders" : "Subfolders"}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {folders.map((folder, idx) => (
+                <FolderCard
+                  key={folder.path}
+                  folder={folder}
+                  gradient={getFolderGradient(idx)}
+                  isRoot={isRoot}
+                  deleting={deletingPath === folder.path}
+                  onOpen={() => handleEnterFolder(folder.path)}
+                  onDelete={() => handleDeleteFolder(folder.path)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Documents */}
+        {documents.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-bold text-white mb-4">
+              {isRoot ? "Documents at Root" : "Documents"}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {documents.map((doc) => (
+                <DocumentCard
+                  key={doc._id}
+                  doc={doc}
+                  onOpen={() => navigate(`/documents/${doc._id}`)}
+                  onDelete={() => handleDelete(doc._id)}
+                />
+              ))}
+            </div>
+            <div ref={sentinelRef} className="h-10" />
+          </div>
+        )}
+
+        {/* Empty state */}
+        {documents.length === 0 && folders.length === 0 && !loading && (
+          <div className="text-center py-16 bg-slate-900 border border-slate-800 rounded-2xl">
+            <div className="text-5xl mb-4 animate-float">📁</div>
+            <p className="text-slate-300 font-medium mb-2">No folders or documents yet</p>
+            <p className="text-slate-500 text-sm mb-6">Create a folder or upload a PDF to get started</p>
+            <button onClick={() => setShowUpload(true)} className="btn-primary">
+              Upload PDF
+            </button>
+          </div>
+        )}
+
+        {loading && (
+          <div className="flex items-center justify-center py-8 gap-2 text-slate-500">
+            <Spinner className="w-5 h-5" />
+            Loading...
+          </div>
+        )}
+
+        {/* Upload FAB */}
+        {(folders.length > 0 || documents.length > 0) && (
           <button
             onClick={() => setShowUpload(true)}
-            className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm rounded-xl px-4 py-2.5 transition-colors"
+            className="fixed bottom-8 right-8 btn-primary flex items-center gap-2 shadow-xl shadow-indigo-500/30 z-20"
           >
-            <PlusIcon className="w-4 h-4" />
-            Upload Document
+            <UploadIcon className="w-5 h-5" />
+            Upload PDF
           </button>
-        </div>
-
-        {error && (
-          <div className="mt-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
-            {error}
-          </div>
         )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6">
-          {documents.map((doc) => (
-            <Link
-              key={doc._id}
-              to={`/documents/${doc._id}`}
-              className="block bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 hover:shadow-sm transition-all group"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="w-11 h-11 rounded-xl bg-emerald-500 flex items-center justify-center text-white">
-                  <DocIcon className="w-5 h-5" />
-                </div>
-                <button
-                  onClick={(e) => handleDelete(doc._id, e)}
-                  className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                  title="Delete document"
-                >
-                  <TrashIcon className="w-4 h-4" />
-                </button>
-              </div>
-
-              {renamingId === doc._id ? (
-                <input
-                  autoFocus
-                  value={renameValue}
-                  onClick={(e) => e.preventDefault()}
-                  onChange={(e) => setRenameValue(e.target.value)}
-                  onBlur={() => submitRename(doc._id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") submitRename(doc._id);
-                    if (e.key === "Escape") setRenamingId(null);
-                  }}
-                  className="w-full text-base font-semibold text-slate-900 border border-emerald-300 rounded-lg px-2 py-1 mb-1 outline-none"
-                />
-              ) : (
-                <h3
-                  className="text-base font-semibold text-slate-900 mb-1 truncate"
-                  title={doc.name}
-                  onDoubleClick={(e) => startRename(doc, e)}
-                >
-                  {doc.name}
-                </h3>
-              )}
-
-              <p className="text-xs text-slate-400 mb-3">{formatSize(doc.size)}</p>
-
-              <div className="flex items-center gap-2 mb-3">
-                <Badge color="purple">{doc.flashcardCount} Flashcards</Badge>
-                <Badge color="green">{doc.quizAttemptCount} Quiz Attempts</Badge>
-              </div>
-
-              <p className="text-xs text-slate-400">Uploaded {timeAgo(doc.createdAt)}</p>
-              <button
-                onClick={(e) => startRename(doc, e)}
-                className="mt-3 text-xs text-emerald-600 hover:underline"
-              >
-                Rename
-              </button>
-            </Link>
-          ))}
-        </div>
-
-        {documents.length === 0 && !loading && (
-          <div className="mt-16 text-center text-slate-400">
-            <p className="text-sm">No documents yet. Upload a PDF to get started.</p>
-          </div>
-        )}
-
-        <div ref={sentinelRef} className="h-10 flex items-center justify-center mt-6">
-          {loading && <p className="text-sm text-slate-400">Loading...</p>}
-        </div>
       </div>
 
-      {showUpload && <UploadModal onClose={() => setShowUpload(false)} onUploaded={handleUploaded} />}
+      {error && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-5 py-3 rounded-xl shadow-lg z-50 flex items-center gap-2 max-w-sm">
+          <span className="flex-shrink-0">⚠</span>
+          <span className="text-sm">{error}</span>
+          <button onClick={() => setError("")} className="ml-2 opacity-70 hover:opacity-100">✕</button>
+        </div>
+      )}
+
+      {showUpload && (
+        <UploadModal
+          onClose={() => setShowUpload(false)}
+          onUploaded={handleUploaded}
+          folderPath={currentPath}
+        />
+      )}
     </div>
   );
 }
 
-function Badge({ children, color }) {
-  const colors = {
-    purple: "bg-purple-50 text-purple-600",
-    green: "bg-emerald-50 text-emerald-600",
-  };
-  return <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${colors[color]}`}>{children}</span>;
-}
+function FolderCard({ folder, gradient, isRoot, deleting, onOpen, onDelete }) {
+  if (isRoot) {
+    return (
+      <div className={`folder-card relative h-36 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg overflow-hidden group`}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={onOpen}
+          onKeyDown={(e) => e.key === "Enter" && onOpen()}
+          className="w-full h-full flex flex-col items-center justify-center gap-2 cursor-pointer"
+        >
+          <FolderIcon className="w-10 h-10 text-white/80" />
+          <div className="text-white font-bold text-center px-4 truncate w-full">{folder.name}</div>
+        </div>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          disabled={deleting}
+          className="absolute top-2.5 right-2.5 z-10 bg-red-500/90 hover:bg-red-600 text-white rounded-lg w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md disabled:opacity-50"
+          title="Delete folder"
+        >
+          {deleting ? <Spinner className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}
+        </button>
+      </div>
+    );
+  }
 
-function formatSize(bytes) {
-  if (!bytes) return "0 KB";
-  const kb = bytes / 1024;
-  if (kb < 1024) return `${kb.toFixed(1)} KB`;
-  return `${(kb / 1024).toFixed(1)} MB`;
-}
-
-function timeAgo(dateStr) {
-  const date = new Date(dateStr);
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-  const days = Math.floor(hours / 24);
-  return `${days} day${days === 1 ? "" : "s"} ago`;
-}
-
-function PlusIcon(props) {
   return (
-    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.5v15m7.5-7.5h-15" />
+    <div className="folder-card relative bg-slate-900 border border-slate-850 rounded-2xl p-5 shadow-sm hover:border-indigo-500/50 hover:shadow-md hover:shadow-indigo-500/5 group">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => e.key === "Enter" && onOpen()}
+        className="cursor-pointer"
+      >
+        <div className="w-12 h-12 rounded-xl bg-indigo-950/40 flex items-center justify-center mb-3">
+          <FolderIcon className="w-6 h-6 text-indigo-400" />
+        </div>
+        <div className="font-semibold text-slate-200 truncate">{folder.name}</div>
+        <div className="text-xs text-slate-500 mt-1">Click to open</div>
+      </div>
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); onDelete(); }}
+        disabled={deleting}
+        className="absolute top-3 right-3 z-10 bg-red-950/30 hover:bg-red-900/40 text-red-450 rounded-lg w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all disabled:opacity-50 cursor-pointer"
+        title="Delete folder"
+      >
+        {deleting ? <Spinner className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}
+      </button>
+    </div>
+  );
+}
+
+function DocumentCard({ doc, onOpen, onDelete }) {
+  return (
+    <div className="group bg-slate-900 border border-slate-850 rounded-2xl p-5 shadow-sm hover:border-indigo-500/50 hover:shadow-md hover:shadow-indigo-500/5 transition-all">
+      <div className="flex items-start justify-between mb-3">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={onOpen}
+          onKeyDown={(e) => e.key === "Enter" && onOpen()}
+          className="w-12 h-12 rounded-xl bg-blue-950/40 flex items-center justify-center cursor-pointer"
+        >
+          <DocIcon className="w-6 h-6 text-blue-400" />
+        </div>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="text-slate-500 hover:text-red-400 hover:bg-red-950/30 rounded-lg p-1.5 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+          title="Delete document"
+        >
+          <TrashIcon className="w-4 h-4" />
+        </button>
+      </div>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => e.key === "Enter" && onOpen()}
+        className="cursor-pointer"
+      >
+        <div className="font-semibold text-slate-200 truncate">{doc.name}</div>
+        <div className="text-xs text-slate-500 mt-1">
+          {doc.flashcardCount > 0 && `${doc.flashcardCount} cards · `}
+          {new Date(doc.createdAt).toLocaleDateString()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FolderIcon(props) {
+  return (
+    <svg {...props} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z" />
     </svg>
   );
 }
@@ -234,6 +389,31 @@ function TrashIcon(props) {
   return (
     <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+    </svg>
+  );
+}
+
+function UploadIcon(props) {
+  return (
+    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+    </svg>
+  );
+}
+
+function BackIcon(props) {
+  return (
+    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+    </svg>
+  );
+}
+
+function Spinner(props) {
+  return (
+    <svg {...props} className={`animate-spin ${props.className || ""}`} fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
   );
 }

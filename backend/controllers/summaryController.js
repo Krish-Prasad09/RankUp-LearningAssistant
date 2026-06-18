@@ -7,7 +7,7 @@ import { callGeminiWithPdf, parseJsonResponse } from "../utils/gemini.js";
 // requests return the cached version unless ?regenerate=true.
 export const getSummary = async (req, res) => {
   try {
-    const doc = await Document.findById(req.params.id);
+    const doc = await Document.findOne({ _id: req.params.id, userId: req.user.id });
     if (!doc) {
       return res.status(404).json({ error: "Document not found" });
     }
@@ -37,6 +37,7 @@ Respond with ONLY a JSON object (no markdown fences, no extra text) in exactly t
     await doc.save();
 
     await Activity.create({
+      userId: req.user.id,
       type: "generated_summary",
       documentId: doc._id,
       documentName: doc.name,

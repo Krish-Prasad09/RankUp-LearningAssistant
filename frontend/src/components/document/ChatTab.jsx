@@ -4,6 +4,7 @@ import { askQuestion } from "../../services/api";
 export default function ChatTab({ doc, setDoc }) {
   const [messages, setMessages] = useState(doc.chatHistory || []);
   const [input, setInput] = useState("");
+  const [answerMode, setAnswerMode] = useState("document");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const endRef = useRef(null);
@@ -26,7 +27,7 @@ export default function ChatTab({ doc, setDoc }) {
     setLoading(true);
 
     try {
-      const data = await askQuestion(doc._id, question);
+      const data = await askQuestion(doc._id, question, answerMode);
       setMessages(data.chatHistory);
       setDoc((prev) => ({ ...prev, chatHistory: data.chatHistory }));
     } catch (err) {
@@ -46,16 +47,46 @@ export default function ChatTab({ doc, setDoc }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl flex flex-col" style={{ height: "75vh" }}>
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl flex flex-col text-slate-100" style={{ height: "75vh" }}>
+      <div className="border-b border-slate-800 px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="text-xs font-medium text-slate-400">Answer source</p>
+        <div className="inline-flex rounded-xl border border-slate-800 bg-slate-950 p-1">
+          <button
+            type="button"
+            onClick={() => setAnswerMode("document")}
+            disabled={loading}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              answerMode === "document"
+                ? "bg-slate-900 text-emerald-400 shadow-sm"
+                : "text-slate-550 hover:text-slate-350"
+            }`}
+          >
+            PDF only
+          </button>
+          <button
+            type="button"
+            onClick={() => setAnswerMode("document_internet")}
+            disabled={loading}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              answerMode === "document_internet"
+                ? "bg-slate-900 text-emerald-400 shadow-sm"
+                : "text-slate-550 hover:text-slate-350"
+            }`}
+          >
+            PDF + Internet
+          </button>
+        </div>
+      </div>
+
       <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-4">
         {messages.length === 0 && (
-          <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-400 px-6">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
-              <ChatIcon className="w-6 h-6 text-emerald-500" />
+          <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-500 px-6">
+            <div className="w-12 h-12 rounded-xl bg-emerald-950/40 flex items-center justify-center mb-3">
+              <ChatIcon className="w-6 h-6 text-emerald-400" />
             </div>
-            <p className="text-sm font-medium text-slate-600">Ask anything about this document</p>
-            <p className="text-xs text-slate-400 mt-1">
-              The AI will answer strictly based on the content of the PDF.
+            <p className="text-sm font-medium text-slate-200">Ask anything about this document</p>
+            <p className="text-xs text-slate-500 mt-1">
+              Choose whether the AI should stay inside the PDF or add web context.
             </p>
           </div>
         )}
@@ -65,8 +96,8 @@ export default function ChatTab({ doc, setDoc }) {
             <div
               className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap ${
                 m.role === "user"
-                  ? "bg-emerald-500 text-white rounded-br-sm"
-                  : "bg-slate-100 text-slate-800 rounded-bl-sm"
+                  ? "bg-emerald-600 text-white rounded-br-sm"
+                  : "bg-slate-950 text-slate-200 rounded-bl-sm border border-slate-800"
               }`}
             >
               {m.content}
@@ -76,7 +107,7 @@ export default function ChatTab({ doc, setDoc }) {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-slate-100 text-slate-400 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm flex items-center gap-1.5">
+            <div className="bg-slate-950 text-slate-500 border border-slate-800 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm flex items-center gap-1.5">
               <Dot /> <Dot delay="150ms" /> <Dot delay="300ms" />
             </div>
           </div>
@@ -87,23 +118,23 @@ export default function ChatTab({ doc, setDoc }) {
 
       {error && (
         <div className="px-4 pb-2">
-          <p className="text-xs text-red-500">{error}</p>
+          <p className="text-xs text-red-400">{error}</p>
         </div>
       )}
 
-      <div className="border-t border-slate-100 p-3 flex items-end gap-2">
+      <div className="border-t border-slate-800 p-3 flex items-end gap-2">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask a question about this document..."
           rows={1}
-          className="flex-1 resize-none border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400 max-h-32"
+          className="flex-1 resize-none border border-slate-800 bg-slate-950 text-white placeholder-slate-550 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 max-h-32"
         />
         <button
           onClick={handleSend}
           disabled={!input.trim() || loading}
-          className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white flex items-center justify-center transition-colors"
+          className="flex-shrink-0 w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white flex items-center justify-center transition-colors cursor-pointer"
         >
           <SendIcon className="w-4.5 h-4.5" />
         </button>

@@ -46,11 +46,13 @@ const quizSchema = new mongoose.Schema(
 
 const documentSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
     originalFileName: { type: String, required: true },
     mimeType: { type: String, default: "application/pdf" },
     size: { type: Number, required: true }, // bytes
     pdfBase64: { type: String, required: true },
+    folderPath: { type: String, default: "/" },
 
     chatHistory: { type: [messageSchema], default: [] },
 
@@ -71,6 +73,6 @@ const documentSchema = new mongoose.Schema(
 
 // Lightweight projection for list views (excludes heavy pdfBase64)
 documentSchema.statics.listProjection =
-  "name originalFileName size createdAt updatedAt lastAccessedAt flashcards quiz.attempts chatHistory summary.generated";
+  "name originalFileName size createdAt updatedAt lastAccessedAt folderPath flashcards quiz.attempts chatHistory summary.generated";
 
 export default mongoose.model("Document", documentSchema);

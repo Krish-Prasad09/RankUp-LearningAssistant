@@ -47,23 +47,23 @@ export default function FlashcardsTab({ doc, setDoc }) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-10 flex items-center justify-center">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 flex items-center justify-center text-slate-100">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="text-slate-100">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-400">
           {flashcards.length} / {FLASHCARDS_MAX} flashcards generated
         </p>
         <div className="flex items-center gap-2">
           {flashcards.length > 0 && (
             <a
               href={exportFlashcardsUrl(doc._id)}
-              className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-emerald-600 border border-slate-200 hover:border-emerald-300 rounded-xl px-3 py-1.5 transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 border border-slate-800 hover:border-emerald-800/85 bg-slate-905 rounded-xl px-3 py-1.5 transition-colors cursor-pointer"
             >
               <DownloadIcon className="w-4 h-4" />
               Export PDF
@@ -72,7 +72,7 @@ export default function FlashcardsTab({ doc, setDoc }) {
           <button
             onClick={handleGenerate}
             disabled={generating || maxReached}
-            className="flex items-center gap-2 text-sm font-medium bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-xl px-4 py-2 transition-colors"
+            className="flex items-center gap-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white rounded-xl px-4 py-2 transition-colors cursor-pointer"
           >
             <PlusIcon className="w-4 h-4" />
             {generating ? "Generating..." : maxReached ? "Max reached" : "Generate 5 more"}
@@ -81,22 +81,22 @@ export default function FlashcardsTab({ doc, setDoc }) {
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
+        <div className="mb-4 bg-red-950/20 border border-red-900/30 text-red-400 text-sm rounded-xl px-4 py-3">
           {error}
         </div>
       )}
 
       {flashcards.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-            <CardIcon className="w-6 h-6 text-emerald-500" />
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center">
+          <div className="w-12 h-12 rounded-xl bg-emerald-950/40 flex items-center justify-center mx-auto mb-3">
+            <CardIcon className="w-6 h-6 text-emerald-400" />
           </div>
-          <p className="text-sm font-medium text-slate-600 mb-1">No flashcards yet</p>
-          <p className="text-xs text-slate-400 mb-4">Generate flashcards from this document's content.</p>
+          <p className="text-sm font-medium text-slate-200 mb-1">No flashcards yet</p>
+          <p className="text-xs text-slate-500 mb-4">Generate flashcards from this document's content.</p>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-4 py-2 transition-colors disabled:opacity-50"
+            className="text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {generating ? "Generating..." : "Generate Flashcards"}
           </button>
@@ -116,15 +116,15 @@ export default function FlashcardsTab({ doc, setDoc }) {
               }}
             >
               <div
-                className="absolute inset-0 bg-white border border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
+                className="absolute inset-0 bg-slate-900 border border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
                 style={{ backfaceVisibility: "hidden" }}
               >
-                <span className="text-xs font-semibold text-emerald-500 tracking-wide mb-3">QUESTION</span>
-                <p className="text-base font-medium text-slate-900">{flashcards[index].question}</p>
-                <span className="text-xs text-slate-300 mt-4">Click to flip</span>
+                <span className="text-xs font-semibold text-emerald-400 tracking-wide mb-3">QUESTION</span>
+                <p className="text-base font-medium text-white">{flashcards[index].question}</p>
+                <span className="text-xs text-slate-500 mt-4">Click to flip</span>
               </div>
               <div
-                className="absolute inset-0 bg-emerald-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
+                className="absolute inset-0 bg-emerald-600 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
                 style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
               >
                 <span className="text-xs font-semibold text-emerald-100 tracking-wide mb-3">ANSWER</span>
@@ -137,16 +137,16 @@ export default function FlashcardsTab({ doc, setDoc }) {
           <div className="flex items-center gap-4 mt-6">
             <button
               onClick={() => goTo(index - 1)}
-              className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:border-emerald-300 transition-colors"
+              className="w-10 h-10 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-800 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-sm font-medium text-slate-600 min-w-[60px] text-center">
+            <span className="text-sm font-medium text-slate-300 min-w-[60px] text-center">
               {index + 1} / {flashcards.length}
             </span>
             <button
               onClick={() => goTo(index + 1)}
-              className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:border-emerald-300 transition-colors"
+              className="w-10 h-10 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-800 transition-colors cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
             </button>

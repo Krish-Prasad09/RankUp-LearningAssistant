@@ -7,19 +7,29 @@ export default function ContentTab({ doc }) {
   }, [doc.pdfBase64]);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-        <p className="text-sm font-medium text-slate-700">Document Viewer</p>
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden text-slate-100">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+        <p className="text-sm font-medium text-slate-200">Document Viewer</p>
         {pdfUrl && (
-          <a
-            href={pdfUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm text-emerald-600 hover:underline flex items-center gap-1"
+          <button
+            onClick={() => {
+              try {
+                const w = window.open();
+                if (w) w.location.href = pdfUrl;
+              } catch (e) {
+                // fallback
+                const a = document.createElement('a');
+                a.href = pdfUrl;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.click();
+              }
+            }}
+            className="text-sm text-emerald-450 hover:text-emerald-350 flex items-center gap-1 cursor-pointer"
           >
             Open in new tab
             <ExternalIcon className="w-3.5 h-3.5" />
-          </a>
+          </button>
         )}
       </div>
       {pdfUrl ? (

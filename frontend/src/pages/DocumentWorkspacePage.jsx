@@ -65,10 +65,10 @@ export default function DocumentWorkspacePage() {
   }
 
   return (
-    <div className="px-8 py-6">
+    <div className="px-8 py-6 text-slate-100">
       <button
         onClick={() => navigate("/documents")}
-        className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-3"
+        className="flex items-center gap-1.5 text-sm text-slate-450 hover:text-slate-250 mb-3 cursor-pointer"
       >
         <BackIcon className="w-4 h-4" />
         Back to Documents
@@ -87,28 +87,28 @@ export default function DocumentWorkspacePage() {
               setRenaming(false);
             }
           }}
-          className="text-2xl font-bold text-slate-900 border border-emerald-300 rounded-lg px-2 py-1 mb-4 outline-none"
+          className="text-2xl font-bold text-white bg-slate-950 border border-emerald-800 rounded-lg px-2 py-1 mb-4 outline-none"
         />
       ) : (
         <h1
-          className="text-2xl font-bold text-slate-900 mb-4 cursor-pointer inline-flex items-center gap-2 group"
+          className="text-2xl font-bold text-white mb-4 cursor-pointer inline-flex items-center gap-2 group"
           onClick={() => setRenaming(true)}
           title="Click to rename"
         >
           {doc.name}
-          <EditIcon className="w-4 h-4 text-slate-300 group-hover:text-slate-500" />
+          <EditIcon className="w-4 h-4 text-slate-500 group-hover:text-slate-350" />
         </h1>
       )}
 
-      <div className="flex gap-6 border-b border-slate-200 mb-6">
+      <div className="flex gap-6 border-b border-slate-800 mb-6">
         {TABS.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
               activeTab === tab
-                ? "border-emerald-500 text-emerald-600"
-                : "border-transparent text-slate-500 hover:text-slate-700"
+                ? "border-emerald-500 text-emerald-400"
+                : "border-transparent text-slate-450 hover:text-slate-200"
             }`}
           >
             {tab}

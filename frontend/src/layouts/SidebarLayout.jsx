@@ -1,34 +1,46 @@
+import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: DashboardIcon },
   { to: "/documents", label: "Documents", icon: DocumentsIcon },
   { to: "/flashcards", label: "Flashcards", icon: FlashcardsIcon },
+  { to: "/quizzes", label: "Quizzes", icon: QuizIcon },
+  { to: "/tasks", label: "Tasks", icon: TasksIcon },
   { to: "/profile", label: "Profile", icon: ProfileIcon },
 ];
 
 export default function SidebarLayout() {
+  const { user, logout } = useAuth();
+  const [imgError, setImgError] = useState(false);
+
   return (
-    <div className="min-h-screen flex bg-slate-50">
-      <aside className="w-60 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
-        <div className="flex items-center gap-2 px-6 py-5">
-          <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-white font-bold text-sm">
-            AI
+    <div className="min-h-screen flex bg-slate-950 text-slate-100">
+      <aside className="w-64 flex-shrink-0 bg-slate-900 flex flex-col">
+        <div className="px-6 py-6 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl hero-gradient flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/30">
+              📈
+            </div>
+            <div>
+              <span className="font-bold text-white text-lg tracking-tight">RankUp</span>
+              <p className="text-[11px] text-slate-400 -mt-0.5">Smart Learning Assistant</p>
+            </div>
           </div>
-          <span className="font-semibold text-slate-900 text-base">AI Learning Assistant</span>
         </div>
 
-        <nav className="flex-1 px-3 mt-2 flex flex-col gap-1">
+        <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? "bg-emerald-500 text-white"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                 }`
               }
             >
@@ -38,15 +50,40 @@ export default function SidebarLayout() {
           ))}
         </nav>
 
-        <div className="px-3 pb-5">
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-700 cursor-pointer transition-colors">
-            <LogoutIcon className="w-5 h-5" />
-            Logout
+        <div className="px-4 py-5 border-t border-slate-800">
+          <div className="flex items-center justify-between px-3 py-2">
+            <div className="flex items-center gap-3 min-w-0">
+              {user?.avatar && !imgError ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  onError={() => setImgError(true)}
+                  className="w-9 h-9 rounded-full object-cover shadow border border-slate-700"
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-full hero-gradient flex items-center justify-center text-white font-semibold text-sm shadow-md shadow-indigo-500/20">
+                  {user?.name ? user.name[0].toUpperCase() : "U"}
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-slate-200 truncate">{user?.name || "Learner"}</p>
+                <p className="text-xs text-slate-500 truncate">{user?.email || "rankup@learn.app"}</p>
+              </div>
+            </div>
+            <button
+              onClick={logout}
+              title="Logout"
+              className="text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-800 transition-all cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
           </div>
         </div>
       </aside>
 
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 overflow-auto">
         <Outlet />
       </main>
     </div>
@@ -85,10 +122,18 @@ function ProfileIcon(props) {
   );
 }
 
-function LogoutIcon(props) {
+function QuizIcon(props) {
   return (
     <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+    </svg>
+  );
+}
+
+function TasksIcon(props) {
+  return (
+    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 6.75h11.25M9 12h11.25M9 17.25h11.25M4.5 6.75l.75.75 1.5-1.5M4.5 12l.75.75 1.5-1.5M4.5 17.25l.75.75 1.5-1.5" />
     </svg>
   );
 }

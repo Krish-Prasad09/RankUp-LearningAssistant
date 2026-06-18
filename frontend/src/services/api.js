@@ -1,86 +1,122 @@
-const BASE_URL = "/api";
+const BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 async function handleResponse(response) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error || "Something went wrong");
+    throw new Error(data.error || `Request failed (${response.status})`);
   }
   return data;
 }
 
+async function apiFetch(url, options = {}) {
+  try {
+    const token = localStorage.getItem("rankup_token");
+    if (token) {
+      options.headers = {
+        ...options.headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+    const response = await fetch(url, options);
+    return handleResponse(response);
+  } catch (err) {
+    if (err.message && !err.message.includes("fetch")) throw err;
+    throw new Error(
+      "Cannot reach the server. Make sure the backend is running on port 8000 and MongoDB is started."
+    );
+  }
+}
+
+export const checkHealth = async () => {
+  const response = await fetch(`${BASE_URL}/health`);
+  return handleResponse(response);
+};
+
 // ---- Documents ----
 
-export const uploadDocument = async (file, name) => {
+export const uploadDocument = async (file, name, folderPath = "/") => {
   const formData = new FormData();
   formData.append("pdf", file);
   if (name) formData.append("name", name);
+  if (folderPath) formData.append("folderPath", folderPath);
 
-  const response = await fetch(`${BASE_URL}/documents`, {
+  return apiFetch(`${BASE_URL}/documents`, {
     method: "POST",
     body: formData,
   });
-  return handleResponse(response);
 };
 
-export const listDocuments = async (page = 1, limit = 10) => {
-  const response = await fetch(`${BASE_URL}/documents?page=${page}&limit=${limit}`);
-  return handleResponse(response);
+export const listDocuments = async (page = 1, limit = 10, folderPath = "/") => {
+  const fp = encodeURIComponent(folderPath || "/");
+  return apiFetch(`${BASE_URL}/documents?page=${page}&limit=${limit}&folderPath=${fp}`);
+};
+
+export const listFolders = async (path = "/") => {
+  const p = encodeURIComponent(path || "/");
+  return apiFetch(`${BASE_URL}/documents/folders?path=${p}`);
+};
+
+export const createFolder = async (path) => {
+  return apiFetch(`${BASE_URL}/documents/folders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ path }),
+  });
+};
+
+export const deleteFolder = async (path) => {
+  const p = encodeURIComponent(path);
+  return apiFetch(`${BASE_URL}/documents/folders?path=${p}`, {
+    method: "DELETE",
+  });
 };
 
 export const getDocument = async (id) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}`);
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/documents/${id}`);
 };
 
 export const renameDocument = async (id, name) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}`, {
+  return apiFetch(`${BASE_URL}/documents/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name }),
   });
-  return handleResponse(response);
 };
 
 export const deleteDocument = async (id) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}`, { method: "DELETE" });
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/documents/${id}`, { method: "DELETE" });
 };
 
 // ---- Dashboard ----
 
 export const getDashboard = async () => {
-  const response = await fetch(`${BASE_URL}/dashboard`);
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/dashboard`);
 };
 
 // ---- Chat ----
 
-export const askQuestion = async (id, question) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/chat`, {
+export const askQuestion = async (id, question, answerMode = "document") => {
+  return apiFetch(`${BASE_URL}/documents/${id}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, answerMode }),
   });
-  return handleResponse(response);
 };
 
 // ---- Summary ----
 
 export const getSummary = async (id, regenerate = false) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/summary${regenerate ? "?regenerate=true" : ""}`);
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/documents/${id}/summary${regenerate ? "?regenerate=true" : ""}`);
 };
 
 // ---- Flashcards ----
 
 export const getFlashcards = async (id) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/flashcards`);
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/documents/${id}/flashcards`);
 };
 
 export const generateFlashcards = async (id) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/flashcards`, { method: "POST" });
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/documents/${id}/flashcards`, { method: "POST" });
 };
 
 export const exportFlashcardsUrl = (id) => `${BASE_URL}/documents/${id}/flashcards/export`;
@@ -88,22 +124,87 @@ export const exportFlashcardsUrl = (id) => `${BASE_URL}/documents/${id}/flashcar
 // ---- Quiz ----
 
 export const getQuiz = async (id) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/quiz`);
-  return handleResponse(response);
+  return apiFetch(`${BASE_URL}/documents/${id}/quiz`);
 };
 
-export const generateQuiz = async (id) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/quiz/generate`, { method: "POST" });
-  return handleResponse(response);
+export const generateQuiz = async (id, options = {}) => {
+  return apiFetch(`${BASE_URL}/documents/${id}/quiz/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(options),
+  });
 };
 
 export const submitQuizAttempt = async (id, answers) => {
-  const response = await fetch(`${BASE_URL}/documents/${id}/quiz/attempt`, {
+  return apiFetch(`${BASE_URL}/documents/${id}/quiz/attempt`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ answers }),
   });
-  return handleResponse(response);
 };
 
 export const exportQuizUrl = (id) => `${BASE_URL}/documents/${id}/quiz/export`;
+
+export const generateQuizFromFolders = async (folders = [], options = {}) => {
+  return apiFetch(`${BASE_URL}/documents/quiz/generate-from-folders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ folders, ...options }),
+  });
+};
+
+// ---- Tasks ----
+
+export const listTasks = async () => {
+  return apiFetch(`${BASE_URL}/tasks`);
+};
+
+export const createTask = async (task) => {
+  return apiFetch(`${BASE_URL}/tasks`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(task),
+  });
+};
+
+export const updateTask = async (id, updates) => {
+  return apiFetch(`${BASE_URL}/tasks/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates),
+  });
+};
+
+export const deleteTask = async (id) => {
+  return apiFetch(`${BASE_URL}/tasks/${id}`, { method: "DELETE" });
+};
+
+export const createCalendarEvent = async (event) => {
+  return apiFetch(`${BASE_URL}/tasks/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(event),
+  });
+};
+
+export const deleteCalendarEvent = async (id) => {
+  return apiFetch(`${BASE_URL}/tasks/events/${id}`, { method: "DELETE" });
+};
+
+// ---- Multiplayer Quiz Rooms ----
+
+export const createQuizRoom = async (payload) => {
+  return apiFetch(`${BASE_URL}/quiz-rooms`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+};
+
+export const joinQuizRoom = async (code) => {
+  return apiFetch(`${BASE_URL}/quiz-rooms/join`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+  });
+};

@@ -10,7 +10,7 @@ const FLASHCARDS_MAX = 30;
 // Generates 5 new flashcards and appends them, up to a max of 30.
 export const generateFlashcards = async (req, res) => {
   try {
-    const doc = await Document.findById(req.params.id);
+    const doc = await Document.findOne({ _id: req.params.id, userId: req.user.id });
     if (!doc) {
       return res.status(404).json({ error: "Document not found" });
     }
@@ -57,6 +57,7 @@ The array must contain exactly ${countToGenerate} items. Keep questions concise 
     await doc.save();
 
     await Activity.create({
+      userId: req.user.id,
       type: "generated_flashcards",
       documentId: doc._id,
       documentName: doc.name,
@@ -77,7 +78,7 @@ The array must contain exactly ${countToGenerate} items. Keep questions concise 
 // GET /api/documents/:id/flashcards
 export const getFlashcards = async (req, res) => {
   try {
-    const doc = await Document.findById(req.params.id, "flashcards name");
+    const doc = await Document.findOne({ _id: req.params.id, userId: req.user.id }, "flashcards name");
     if (!doc) {
       return res.status(404).json({ error: "Document not found" });
     }
@@ -91,7 +92,7 @@ export const getFlashcards = async (req, res) => {
 // GET /api/documents/:id/flashcards/export -> downloadable PDF
 export const exportFlashcards = async (req, res) => {
   try {
-    const doc = await Document.findById(req.params.id, "flashcards name");
+    const doc = await Document.findOne({ _id: req.params.id, userId: req.user.id }, "flashcards name");
     if (!doc) {
       return res.status(404).json({ error: "Document not found" });
     }

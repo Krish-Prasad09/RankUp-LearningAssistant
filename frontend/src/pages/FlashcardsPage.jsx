@@ -58,18 +58,13 @@ export default function FlashcardsPage() {
   const totalCards = groups.reduce((sum, g) => sum + g.flashcards.length, 0);
 
   return (
-    <div>
-      <TopBar />
+    <div className="animate-fade-in text-slate-100">
+      <TopBar title="Flashcards" subtitle={totalCards > 0 ? `${totalCards} flashcards across ${groups.length} document${groups.length === 1 ? "" : "s"}` : "All your flashcards in one place"} />
+
       <div className="px-8 pb-10">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Flashcards</h1>
-        <p className="text-slate-500 mb-6">
-          {totalCards > 0
-            ? `${totalCards} flashcards across ${groups.length} document${groups.length === 1 ? "" : "s"}`
-            : "All your flashcards in one place"}
-        </p>
 
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
+          <div className="mb-6 bg-red-950/20 border border-red-900/30 text-red-400 text-sm rounded-xl px-4 py-3">
             {error}
           </div>
         )}
@@ -77,18 +72,15 @@ export default function FlashcardsPage() {
         {loading && <p className="text-sm text-slate-400">Loading...</p>}
 
         {!loading && groups.length === 0 && !error && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-              <CardIcon className="w-6 h-6 text-emerald-500" />
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center shadow-sm">
+            <div className="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/20">
+              <CardIcon className="w-7 h-7 text-white" />
             </div>
-            <p className="text-sm font-medium text-slate-600 mb-1">No flashcards yet</p>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-sm font-semibold text-slate-200 mb-1">No flashcards yet</p>
+            <p className="text-xs text-slate-450 mb-5">
               Open a document and generate flashcards from its Flashcards tab.
             </p>
-            <Link
-              to="/documents"
-              className="inline-block text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-4 py-2 transition-colors"
-            >
+            <Link to="/documents" className="btn-primary inline-flex text-sm">
               Go to Documents
             </Link>
           </div>
@@ -98,25 +90,25 @@ export default function FlashcardsPage() {
           {groups.map(({ doc, flashcards }) => {
             const isOpen = openId === doc._id;
             return (
-              <div key={doc._id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+              <div key={doc._id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
                 <button
                   onClick={() => setOpenId(isOpen ? null : doc._id)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-50 transition-colors"
+                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-800/40 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
+                    <div className="w-10 h-10 rounded-xl hero-gradient flex items-center justify-center text-white flex-shrink-0">
                       <DocIcon className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{doc.name}</p>
-                      <p className="text-xs text-slate-400">{flashcards.length} flashcards</p>
+                      <p className="text-sm font-semibold text-white truncate">{doc.name}</p>
+                      <p className="text-xs text-slate-500">{flashcards.length} flashcards</p>
                     </div>
                   </div>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-5 h-5 text-slate-500 flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-slate-100 pt-4">
+                  <div className="px-5 pb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 border-t border-slate-800/60 pt-4">
                     {flashcards.map((card, i) => (
                       <FlashcardPreview key={i} card={card} />
                     ))}
@@ -140,13 +132,13 @@ function FlashcardPreview({ card }) {
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
       >
         <div
-          className="absolute inset-0 bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
+          className="absolute inset-0 bg-slate-950 border border-slate-850 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <p className="text-sm font-medium text-slate-800">{card.question}</p>
+          <p className="text-sm font-medium text-slate-100">{card.question}</p>
         </div>
         <div
-          className="absolute inset-0 bg-emerald-500 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
+          className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <p className="text-sm font-medium text-white">{card.answer}</p>

@@ -8,13 +8,14 @@ import { callGeminiWithPdf } from "../utils/gemini.js";
 export const askQuestion = async (req, res) => {
   try {
     const { id } = req.params;
-    const { question } = req.body;
+    const { question, answerMode = "document" } = req.body;
+    const useInternet = answerMode === "document_internet";
 
     if (!question || question.trim() === "") {
       return res.status(400).json({ error: "No question provided" });
     }
 
-    const doc = await Document.findById(id);
+    const doc = await Document.findOne({ _id: id, userId: req.user.id });
     if (!doc) {
       return res.status(404).json({ error: "Document not found" });
     }
@@ -31,12 +32,16 @@ export const askQuestion = async (req, res) => {
       historyContext += "\nNow answer the following new question:";
     }
 
-    const prompt = `You are a helpful assistant that answers questions based strictly on the content of the provided PDF document. If the answer is not found in the PDF, clearly say so.
+    const modeInstruction = useInternet
+      ? "Answer using the uploaded PDF document as the primary source, and use Google Search only to add relevant, current, or clarifying context when it helps. Make it clear when information comes from the web rather than the PDF."
+      : "Answer based strictly on the content of the uploaded PDF document. Do not use outside knowledge. If the answer is not found in the PDF, clearly say so.";
+
+    const prompt = `You are a helpful learning assistant. ${modeInstruction}
 ${historyContext}
 
 Question: ${question}`;
 
-    const answer = await callGeminiWithPdf(doc.pdfBase64, prompt);
+    const answer = await callGeminiWithPdf(doc.pdfBase64, prompt, { useGoogleSearch: useInternet });
     // ---- END UNCHANGED CORE LOGIC ----
 
     doc.chatHistory.push({ role: "user", content: question });

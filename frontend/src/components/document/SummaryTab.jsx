@@ -35,7 +35,7 @@ export default function SummaryTab({ doc, setDoc }) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-10 flex flex-col items-center justify-center text-center">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 flex flex-col items-center justify-center text-center text-slate-100">
         <Spinner />
         <p className="text-sm text-slate-400 mt-3">Generating summary from document...</p>
       </div>
@@ -44,11 +44,11 @@ export default function SummaryTab({ doc, setDoc }) {
 
   if (error && !summary) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center">
-        <p className="text-sm text-red-500 mb-3">{error}</p>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center text-slate-100">
+        <p className="text-sm text-red-400 mb-3">{error}</p>
         <button
           onClick={() => load(false)}
-          className="text-sm text-emerald-600 font-medium hover:underline"
+          className="text-sm text-emerald-400 font-medium hover:text-emerald-300 cursor-pointer"
         >
           Try again
         </button>
@@ -57,21 +57,21 @@ export default function SummaryTab({ doc, setDoc }) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6">
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-slate-100">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <div className="inline-flex bg-slate-50 rounded-xl p-1">
+        <div className="inline-flex bg-slate-950 rounded-xl p-1">
           <button
             onClick={() => setView("quick")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              view === "quick" ? "bg-white text-emerald-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+              view === "quick" ? "bg-slate-900 text-emerald-400 shadow-sm" : "text-slate-500 hover:text-slate-350"
             }`}
           >
             Quick Overview
           </button>
           <button
             onClick={() => setView("detailed")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              view === "detailed" ? "bg-white text-emerald-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+              view === "detailed" ? "bg-slate-900 text-emerald-400 shadow-sm" : "text-slate-500 hover:text-slate-350"
             }`}
           >
             Detailed Summary
@@ -81,16 +81,16 @@ export default function SummaryTab({ doc, setDoc }) {
         <button
           onClick={() => load(true)}
           disabled={regenerating}
-          className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-emerald-600 border border-slate-200 hover:border-emerald-300 rounded-xl px-3 py-1.5 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 border border-slate-800 hover:border-emerald-800/80 rounded-xl px-3 py-1.5 transition-colors disabled:opacity-50 cursor-pointer bg-slate-950/20"
         >
           <RefreshIcon className={`w-4 h-4 ${regenerating ? "animate-spin" : ""}`} />
           {regenerating ? "Regenerating..." : "Regenerate"}
         </button>
       </div>
 
-      {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
+      {error && <p className="text-sm text-red-400 mb-3">{error}</p>}
 
-      <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed whitespace-pre-wrap">
+      <div className="prose prose-sm max-w-none text-slate-200 leading-relaxed whitespace-pre-wrap">
         {view === "quick" ? summary?.quick : summary?.detailed}
       </div>
     </div>
