@@ -10,6 +10,7 @@ import tasksRoutes from "./routes/tasks.js";
 import quizRoomsRoutes from "./routes/quizRooms.js";
 import { auth } from "./middleware/auth.js";
 import { attachQuizRoomsSocket } from "./socket/quizRoomsSocket.js";
+import { askStatelessQuestion } from "./controllers/chatController.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cors());
 app.use(express.json({ limit: "5mb" }));
 
 app.use("/api/auth", authRoutes);
+app.post("/api/chat", auth, askStatelessQuestion);
 app.use("/api/documents", auth, documentsRoutes);
 app.use("/api/dashboard", auth, dashboardRoutes);
 app.use("/api/tasks", auth, tasksRoutes);

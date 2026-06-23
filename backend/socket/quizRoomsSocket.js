@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
 import QuizRoom from "../models/QuizRoom.js";
 import User from "../models/User.js";
+import Activity from "../models/Activity.js";
 import { canAccess, toRoom } from "../controllers/quizRoomsController.js";
 
 const playerDisconnectTimeouts = new Map();
@@ -56,9 +57,26 @@ export function attachQuizRoomsSocket(server) {
         const room = await findAccessibleRoom(code, socket.data.userId);
         requireHost(room, socket.data.userId);
         room.status = "active";
+        room.startedAt = new Date();
         await room.save();
         acknowledge(ack, { room: toRoom(room, socket.data.userId) });
         await emitRoomUpdate(io, room.code);
+
+        // Server-side timer to auto-finish the room
+        if (room.duration > 0) {
+          setTimeout(async () => {
+            try {
+              const currentRoom = await QuizRoom.findOne({ code: room.code });
+              if (currentRoom && currentRoom.status === "active") {
+                currentRoom.status = "finished";
+                await currentRoom.save();
+                await emitRoomUpdate(io, room.code);
+              }
+            } catch (err) {
+              console.error("Auto finish quiz room timeout error:", err);
+            }
+          }, room.duration * 1000 + 2000);
+        }
       } catch (error) {
         acknowledge(ack, null, error);
       }
@@ -72,10 +90,8 @@ export function attachQuizRoomsSocket(server) {
         const player = room.players.find((p) => String(p.userId) === socket.data.userId);
         if (!player) throw new Error("Join this room first.");
 
-        const normalizedAnswers = Array.isArray(answers) ? answers.map((answer) => parseInt(answer, 10)) : [];
-        if (normalizedAnswers.length !== room.questions.length) {
-          throw new Error("Answer every question before submitting.");
-        }
+        const rawAnswers = Array.isArray(answers) ? answers.map((a) => parseInt(a, 10)) : [];
+        const normalizedAnswers = room.questions.map((_, idx) => (Number.isInteger(rawAnswers[idx]) ? rawAnswers[idx] : -1));
 
         player.answers = normalizedAnswers;
         player.score = room.questions.reduce(
@@ -89,6 +105,21 @@ export function attachQuizRoomsSocket(server) {
         }
 
         await room.save();
+
+        const activityExists = await Activity.exists({
+          userId: socket.data.userId,
+          type: "attempted_quiz",
+          "meta.roomCode": room.code,
+        });
+        if (!activityExists) {
+          await Activity.create({
+            userId: socket.data.userId,
+            type: "attempted_quiz",
+            documentName: room.title || "Multiplayer Quiz",
+            meta: { score: player.score, total: room.questions.length, roomCode: room.code },
+          });
+        }
+
         acknowledge(ack, { room: toRoom(room, socket.data.userId) });
         await emitRoomUpdate(io, room.code);
       } catch (error) {
@@ -96,12 +127,46 @@ export function attachQuizRoomsSocket(server) {
       }
     });
 
-    socket.on("quiz:finish", async ({ code } = {}, ack) => {
+    socket.on("quiz:finish", async ({ code, answers } = {}, ack) => {
       try {
         const room = await findAccessibleRoom(code, socket.data.userId);
         requireHost(room, socket.data.userId);
-        room.status = "finished";
+
+        const player = room.players.find((p) => String(p.userId) === socket.data.userId);
+        if (player) {
+          const rawAnswers = Array.isArray(answers) ? answers.map((a) => parseInt(a, 10)) : [];
+          const normalizedAnswers = room.questions.map((_, idx) => (Number.isInteger(rawAnswers[idx]) ? rawAnswers[idx] : -1));
+
+          player.answers = normalizedAnswers;
+          player.score = room.questions.reduce(
+            (score, question, index) => score + (normalizedAnswers[index] === question.correctIndex ? 1 : 0),
+            0
+          );
+          player.submittedAt = new Date();
+        }
+
+        if (room.players.length > 0 && room.players.every((p) => p.submittedAt)) {
+          room.status = "finished";
+        }
+
         await room.save();
+
+        if (player) {
+          const activityExists = await Activity.exists({
+            userId: socket.data.userId,
+            type: "attempted_quiz",
+            "meta.roomCode": room.code,
+          });
+          if (!activityExists) {
+            await Activity.create({
+              userId: socket.data.userId,
+              type: "attempted_quiz",
+              documentName: room.title || "Multiplayer Quiz",
+              meta: { score: player.score, total: room.questions.length, roomCode: room.code },
+            });
+          }
+        }
+
         acknowledge(ack, { room: toRoom(room, socket.data.userId) });
         await emitRoomUpdate(io, room.code);
       } catch (error) {
@@ -172,6 +237,16 @@ async function findAccessibleRoom(code, userId) {
   const room = await QuizRoom.findOne({ code: normalizedCode });
   if (!room) throw new Error("Room not found.");
   if (!canAccess(room, userId)) throw new Error("Join this room first.");
+
+  // Check if active room timer has already expired
+  if (room.status === "active" && room.duration > 0 && room.startedAt) {
+    const elapsed = (Date.now() - new Date(room.startedAt).getTime()) / 1000;
+    if (elapsed >= room.duration) {
+      room.status = "finished";
+      await room.save();
+    }
+  }
+
   return room;
 }
 

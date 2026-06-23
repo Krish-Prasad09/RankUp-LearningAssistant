@@ -1,6 +1,6 @@
 import Document from "../models/Document.js";
 import Activity from "../models/Activity.js";
-import { callGeminiWithPdf, parseJsonResponse } from "../utils/gemini.js";
+import { callGroq, extractTextFromPdf, parseJsonResponse } from "../utils/groq.js";
 
 // GET /api/documents/:id/summary
 // Generates the summary on first request and caches it; subsequent
@@ -18,7 +18,15 @@ export const getSummary = async (req, res) => {
       return res.json({ summary: doc.summary });
     }
 
-    const prompt = `You are an expert study assistant. Read the attached PDF document carefully and produce a summary.
+    // Extract PDF text for context
+    const pdfText = await extractTextFromPdf(doc.pdfBase64);
+
+    const systemPrompt = `You are an expert study assistant. Here is the text content extracted from the uploaded PDF document:
+---
+${pdfText}
+---`;
+
+    const userPrompt = `Read the provided PDF text carefully and produce a summary.
 
 Respond with ONLY a JSON object (no markdown fences, no extra text) in exactly this format:
 {
@@ -26,7 +34,7 @@ Respond with ONLY a JSON object (no markdown fences, no extra text) in exactly t
   "detailed": "A thorough, well-structured summary covering the key sections, concepts, and important details of the document, written in multiple paragraphs."
 }`;
 
-    const raw = await callGeminiWithPdf(doc.pdfBase64, prompt);
+    const raw = await callGroq(systemPrompt, userPrompt);
     const parsed = parseJsonResponse(raw);
 
     doc.summary = {

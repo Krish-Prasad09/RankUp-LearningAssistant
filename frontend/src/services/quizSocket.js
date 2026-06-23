@@ -7,7 +7,7 @@ let socket;
 export function getQuizSocket() {
   const token = localStorage.getItem("rankup_token");
 
-  if (socket?.connected && socket.auth?.token === token) return socket;
+  if (socket && socket.auth?.token === token) return socket;
 
   if (socket) socket.disconnect();
 
@@ -32,8 +32,8 @@ export function submitQuizSocketAnswers(code, answers) {
   return emitQuizEvent("quiz:submit", { code, answers });
 }
 
-export function finishQuizSocketRoom(code) {
-  return emitQuizEvent("quiz:finish", { code });
+export function finishQuizSocketRoom(code, answers) {
+  return emitQuizEvent("quiz:finish", { code, answers });
 }
 
 function emitQuizEvent(event, payload) {

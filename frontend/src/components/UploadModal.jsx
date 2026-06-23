@@ -41,8 +41,11 @@ export default function UploadModal({ onClose, onUploaded, folderPath = "/" }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl animate-fade-in text-slate-100">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-white">Upload Document</h2>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold text-white">Upload Document</h2>
+            <p className="text-xs text-slate-400 mt-0.5">(better performance for lesser pages)</p>
+          </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-250 p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
             <CloseIcon className="w-5 h-5" />
           </button>

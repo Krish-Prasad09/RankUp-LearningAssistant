@@ -27,6 +27,7 @@ export default function TasksPage() {
   const [calendarMonth, setCalendarMonth] = useState(startOfMonth(new Date()));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -187,12 +188,20 @@ export default function TasksPage() {
 
           <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-5">
-              <button onClick={() => setCalendarMonth(addMonths(calendarMonth, -1))} className="icon-button cursor-pointer" title="Previous month">
-                <ChevronLeftIcon className="w-5 h-5" />
-              </button>
-              <h2 className="font-semibold text-white">{calendarMonth.toLocaleString(undefined, { month: "long", year: "numeric" })}</h2>
-              <button onClick={() => setCalendarMonth(addMonths(calendarMonth, 1))} className="icon-button cursor-pointer" title="Next month">
-                <ChevronRightIcon className="w-5 h-5" />
+              <div className="flex items-center gap-2">
+                <button onClick={() => setCalendarMonth(addMonths(calendarMonth, -1))} className="icon-button cursor-pointer" title="Previous month">
+                  <ChevronLeftIcon className="w-5 h-5" />
+                </button>
+                <h2 className="font-semibold text-white">{calendarMonth.toLocaleString(undefined, { month: "long", year: "numeric" })}</h2>
+                <button onClick={() => setCalendarMonth(addMonths(calendarMonth, 1))} className="icon-button cursor-pointer" title="Next month">
+                  <ChevronRightIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <button
+                onClick={() => setIsFullScreen(true)}
+                className="text-xs font-semibold text-indigo-400 hover:text-indigo-350 border border-slate-850 hover:border-indigo-850 bg-slate-950 px-3 py-1.5 rounded-xl cursor-pointer transition-colors shadow-sm"
+              >
+                Full Screen ↗
               </button>
             </div>
 
@@ -269,6 +278,172 @@ export default function TasksPage() {
           </section>
         </div>
       </div>
+
+      {isFullScreen && (
+        <div className="fixed inset-0 bg-slate-950 z-50 flex flex-col p-6 sm:p-8 overflow-y-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-850">
+            <div>
+              <h2 className="text-2xl font-extrabold text-white flex items-center gap-2">
+                📅 Study Calendar
+              </h2>
+              <p className="text-sm text-slate-500 mt-1">Full screen interactive planner and deadline tracker</p>
+            </div>
+            <button
+              onClick={() => setIsFullScreen(false)}
+              className="px-4 py-2 border border-slate-800 bg-slate-900 hover:bg-slate-800 hover:border-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all cursor-pointer shadow-sm"
+            >
+              Close Calendar ✕
+            </button>
+          </div>
+
+          {/* Layout Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 flex-1 min-h-0">
+            {/* Left Column: Big Calendar */}
+            <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 flex flex-col shadow-sm">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setCalendarMonth(addMonths(calendarMonth, -1))}
+                    className="icon-button cursor-pointer"
+                    title="Previous month"
+                  >
+                    <ChevronLeftIcon className="w-5.5 h-5.5" />
+                  </button>
+                  <h3 className="text-xl font-bold text-white">
+                    {calendarMonth.toLocaleString(undefined, { month: "long", year: "numeric" })}
+                  </h3>
+                  <button
+                    onClick={() => setCalendarMonth(addMonths(calendarMonth, 1))}
+                    className="icon-button cursor-pointer"
+                    title="Next month"
+                  >
+                    <ChevronRightIcon className="w-5.5 h-5.5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-7 gap-2 flex-1">
+                {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+                  <div key={day} className="text-center text-xs font-bold text-slate-500 py-2 border-b border-slate-850">
+                    {day}
+                  </div>
+                ))}
+                {days.map((day) => {
+                  const key = toDateInput(day.date);
+                  const dayEvents = eventsByDate[key] || [];
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setEventDate(key)}
+                      className={`min-h-[100px] rounded-xl border p-3 text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        day.inMonth
+                          ? "bg-slate-950 border-slate-850 text-slate-200 hover:border-indigo-650"
+                          : "bg-slate-950/60 border-slate-900/40 text-slate-650"
+                      } ${eventDate === key ? "ring-2 ring-indigo-500/40 border-indigo-500/60 bg-indigo-950/5" : ""}`}
+                    >
+                      <span className="text-sm font-bold">{day.date.getDate()}</span>
+                      <div className="mt-2 flex flex-col gap-1.5 w-full flex-1 justify-start">
+                        {dayEvents.slice(0, 3).map((event) => (
+                          <span
+                            key={event._id}
+                            className={`truncate rounded-lg border px-2 py-1 text-[11px] font-medium w-full block ${
+                              eventColors[event.color] || eventColors.indigo
+                            }`}
+                          >
+                            {event.label}
+                          </span>
+                        ))}
+                        {dayEvents.length > 3 && (
+                          <span className="text-[10px] text-slate-500 font-semibold">+{dayEvents.length - 3} more</span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right Column: Event detail & Add Event */}
+            <div className="flex flex-col gap-6">
+              {/* Event labels for Selected Date */}
+              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-sm flex-1 overflow-y-auto">
+                <h3 className="font-bold text-white text-base mb-1">📅 Selected Date</h3>
+                <p className="text-xs text-slate-500 mb-4">{formatDate(eventDate)}</p>
+
+                <div className="space-y-3">
+                  {(eventsByDate[eventDate] || []).length === 0 ? (
+                    <p className="text-xs text-slate-500 italic py-4">No events or labels on this date.</p>
+                  ) : (
+                    (eventsByDate[eventDate] || []).map((event) => (
+                      <div
+                        key={event._id}
+                        className="flex items-center justify-between gap-2 text-sm border border-slate-850 bg-slate-950/30 rounded-xl px-4 py-3"
+                      >
+                        <span className={`rounded-lg border px-2.5 py-1 text-xs font-semibold ${eventColors[event.color] || eventColors.indigo}`}>
+                          {event.label}
+                        </span>
+                        <button
+                          onClick={() => removeEvent(event._id)}
+                          className="text-slate-550 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                          title="Remove label"
+                        >
+                          <TrashIcon className="w-4.5 h-4.5" />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Add event form */}
+              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-sm">
+                <h3 className="font-bold text-white text-base mb-4">Add Study Event</h3>
+                <form onSubmit={addEvent} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 tracking-wide mb-2">DATE</label>
+                    <input
+                      type="date"
+                      value={eventDate}
+                      onChange={(e) => setEventDate(e.target.value)}
+                      className="w-full border border-slate-800 bg-slate-950 text-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 tracking-wide mb-2">LABEL COLOR</label>
+                    <select
+                      value={eventColor}
+                      onChange={(e) => setEventColor(e.target.value)}
+                      className="w-full border border-slate-800 bg-slate-950 text-slate-350 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
+                    >
+                      <option value="indigo">Indigo (Standard)</option>
+                      <option value="emerald">Emerald (Revision)</option>
+                      <option value="amber">Amber (Exam/Test)</option>
+                      <option value="rose">Rose (Urgent/Lab)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 tracking-wide mb-2">EVENT DESCRIPTION</label>
+                    <input
+                      value={eventLabel}
+                      onChange={(e) => setEventLabel(e.target.value)}
+                      placeholder="e.g. Science Exam, Lab Submission"
+                      className="w-full border border-slate-800 bg-slate-950 text-white placeholder-slate-550 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full btn-primary text-sm font-semibold py-2.5 cursor-pointer"
+                    disabled={!eventLabel.trim()}
+                  >
+                    Add Event Label
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

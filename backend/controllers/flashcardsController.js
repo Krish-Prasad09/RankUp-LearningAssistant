@@ -1,6 +1,6 @@
 import Document from "../models/Document.js";
 import Activity from "../models/Activity.js";
-import { callGeminiWithPdf, parseJsonResponse } from "../utils/gemini.js";
+import { callGroq, extractTextFromPdf, parseJsonResponse } from "../utils/groq.js";
 import { buildFlashcardsPdf } from "../utils/pdfExport.js";
 
 const FLASHCARDS_PER_GENERATION = 5;
@@ -33,7 +33,15 @@ export const generateFlashcards = async (req, res) => {
             .join("\n")}`
         : "";
 
-    const prompt = `You are an expert study assistant. Read the attached PDF document and create exactly ${countToGenerate} flashcards covering important concepts from it.${existingContext}
+    // Extract PDF text for context
+    const pdfText = await extractTextFromPdf(doc.pdfBase64);
+
+    const systemPrompt = `You are an expert study assistant. Here is the text content extracted from the uploaded PDF document:
+---
+${pdfText}
+---`;
+
+    const userPrompt = `Based on the provided PDF text, create exactly ${countToGenerate} flashcards covering important concepts from it.${existingContext}
 
 Respond with ONLY a JSON array (no markdown fences, no extra text) in exactly this format:
 [
@@ -41,7 +49,7 @@ Respond with ONLY a JSON array (no markdown fences, no extra text) in exactly th
 ]
 The array must contain exactly ${countToGenerate} items. Keep questions concise and answers clear and informative.`;
 
-    const raw = await callGeminiWithPdf(doc.pdfBase64, prompt);
+    const raw = await callGroq(systemPrompt, userPrompt);
     const parsed = parseJsonResponse(raw);
 
     if (!Array.isArray(parsed)) {

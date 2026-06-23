@@ -8,8 +8,8 @@ const activitySchema = new mongoose.Schema(
       enum: ["accessed_document", "attempted_quiz", "generated_flashcards", "generated_summary"],
       required: true,
     },
-    documentId: { type: mongoose.Schema.Types.ObjectId, ref: "Document", required: true },
-    documentName: { type: String, required: true },
+    documentId: { type: mongoose.Schema.Types.ObjectId, ref: "Document" },
+    documentName: { type: String },
     meta: { type: mongoose.Schema.Types.Mixed, default: {} }, // e.g. { score: 4, total: 5, attemptNumber: 2 }
   },
   { timestamps: true }

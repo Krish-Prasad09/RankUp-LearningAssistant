@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDocument, renameDocument } from "../services/api";
-import ContentTab from "../components/document/ContentTab";
 import ChatTab from "../components/document/ChatTab";
 import SummaryTab from "../components/document/SummaryTab";
 import FlashcardsTab from "../components/document/FlashcardsTab";
 import QuizTab from "../components/document/QuizTab";
 
-const TABS = ["Content", "Chat", "Summary", "Flashcards", "Quizzes"];
+const TABS = ["Chat", "Summary", "Flashcards", "Quizzes"];
 
 export default function DocumentWorkspacePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [doc, setDoc] = useState(null);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("Content");
+  const [activeTab, setActiveTab] = useState("Chat");
   const [renaming, setRenaming] = useState(false);
   const [nameValue, setNameValue] = useState("");
 
@@ -116,7 +115,6 @@ export default function DocumentWorkspacePage() {
         ))}
       </div>
 
-      {activeTab === "Content" && <ContentTab doc={doc} />}
       {activeTab === "Chat" && <ChatTab doc={doc} setDoc={setDoc} />}
       {activeTab === "Summary" && <SummaryTab doc={doc} setDoc={setDoc} />}
       {activeTab === "Flashcards" && <FlashcardsTab doc={doc} setDoc={setDoc} />}

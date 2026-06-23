@@ -19,7 +19,7 @@ export default function FlashcardsPage() {
         let page = 1;
         let hasMore = true;
         while (hasMore) {
-          const data = await listDocuments(page, 50);
+          const data = await listDocuments(page, 50, "/", true);
           all = all.concat(data.documents);
           hasMore = data.hasMore;
           page += 1;

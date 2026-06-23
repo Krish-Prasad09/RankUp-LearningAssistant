@@ -151,12 +151,22 @@ export default function DashboardPage() {
                     <p className="text-xs text-slate-500">{new Date(a.createdAt).toLocaleString()}</p>
                   </div>
                 </div>
-                <Link
-                  to={`/documents/${a.documentId}`}
-                  className="text-sm text-indigo-400 font-medium hover:text-indigo-300 flex-shrink-0"
-                >
-                  View →
-                </Link>
+                {a.documentId ? (
+                  <Link
+                    to={`/documents/${a.documentId}`}
+                    className="text-sm text-indigo-400 font-medium hover:text-indigo-300 flex-shrink-0"
+                  >
+                    View →
+                  </Link>
+                ) : a.meta?.roomCode ? (
+                  <Link
+                    to={`/quizzes`}
+                    state={{ roomCode: a.meta.roomCode }}
+                    className="text-sm text-indigo-400 font-medium hover:text-indigo-300 flex-shrink-0"
+                  >
+                    View Room →
+                  </Link>
+                ) : null}
               </div>
             ))}
           </div>

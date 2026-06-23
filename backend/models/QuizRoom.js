@@ -29,6 +29,8 @@ const quizRoomSchema = new mongoose.Schema(
     status: { type: String, enum: ["waiting", "active", "finished"], default: "waiting" },
     questions: { type: [roomQuestionSchema], required: true },
     players: { type: [roomPlayerSchema], default: [] },
+    duration: { type: Number, default: 120 }, // duration in seconds (0 = no limit)
+    startedAt: { type: Date },
   },
   { timestamps: true }
 );

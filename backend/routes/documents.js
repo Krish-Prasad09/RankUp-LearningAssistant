@@ -24,6 +24,7 @@ import {
   submitQuizAttempt,
   exportQuiz,
   generateQuizFromFolders,
+  analyzeQuizAttempt,
 } from "../controllers/quizController.js";
 
 const router = express.Router();
@@ -59,5 +60,7 @@ router.post("/:id/quiz/attempt", submitQuizAttempt);
 router.get("/:id/quiz/export", exportQuiz);
 // Generate a quiz from multiple folders (body: { folders: ["/path1","/path2"], difficulty, sourceMode, total })
 router.post("/quiz/generate-from-folders", generateQuizFromFolders);
+// Analyze a quiz attempt and generate an AI report (body: { questions: [...], answers: [...] })
+router.post("/quiz/analyze", analyzeQuizAttempt);
 
 export default router;
