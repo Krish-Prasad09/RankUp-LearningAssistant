@@ -1,6 +1,8 @@
-node_modules/
+backend/.env.example
+frontend/.env.example
 .env
-.DS_Store
-*.zip
-frontend-dev.err
-frontend-dev
+*.env
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+frontend/dist/

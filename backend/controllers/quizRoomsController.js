@@ -1,5 +1,6 @@
 import QuizRoom from "../models/QuizRoom.js";
 import User from "../models/User.js";
+import Activity from "../models/Activity.js";
 
 export const createRoom = async (req, res) => {
   try {
@@ -7,11 +8,13 @@ export const createRoom = async (req, res) => {
     if (questions.length < 1) return res.status(400).json({ error: "Generate a quiz before creating a room." });
 
     const user = await User.findById(req.user.id).select("name");
+    const duration = parseInt(req.body.duration);
     const room = await QuizRoom.create({
       code: await makeUniqueCode(),
       hostUserId: req.user.id,
       title: (req.body.title || "Multiplayer Quiz").trim(),
       questions,
+      duration: Number.isInteger(duration) ? duration : 120,
       players: [{ userId: req.user.id, name: user?.name || "Host", answers: [] }],
     });
 
@@ -84,8 +87,8 @@ export const submitRoomAnswers = async (req, res) => {
     const player = room.players.find((p) => String(p.userId) === req.user.id);
     if (!player) return res.status(403).json({ error: "Join this room first." });
 
-    const answers = Array.isArray(req.body.answers) ? req.body.answers.map((a) => parseInt(a)) : [];
-    if (answers.length !== room.questions.length) return res.status(400).json({ error: "Answer every question before submitting." });
+    const rawAnswers = Array.isArray(req.body.answers) ? req.body.answers.map((a) => parseInt(a)) : [];
+    const answers = room.questions.map((_, idx) => (Number.isInteger(rawAnswers[idx]) ? rawAnswers[idx] : -1));
 
     player.answers = answers;
     player.score = room.questions.reduce((score, q, index) => score + (answers[index] === q.correctIndex ? 1 : 0), 0);
@@ -96,6 +99,21 @@ export const submitRoomAnswers = async (req, res) => {
     }
 
     await room.save();
+
+    const activityExists = await Activity.exists({
+      userId: req.user.id,
+      type: "attempted_quiz",
+      "meta.roomCode": room.code,
+    });
+    if (!activityExists) {
+      await Activity.create({
+        userId: req.user.id,
+        type: "attempted_quiz",
+        documentName: room.title || "Multiplayer Quiz",
+        meta: { score: player.score, total: room.questions.length, roomCode: room.code },
+      });
+    }
+
     res.json({ room: toRoom(room, req.user.id) });
   } catch (error) {
     console.error("Submit room answers error:", error);
@@ -163,6 +181,8 @@ export function toRoom(room, userId) {
     title: room.title,
     status: room.status,
     isHost,
+    duration: room.duration,
+    startedAt: room.startedAt,
     questions: room.questions.map((q) => ({
       question: q.question,
       options: q.options,

@@ -2,6 +2,7 @@ import Document from "../models/Document.js";
 import Activity from "../models/Activity.js";
 import mongoose from "mongoose";
 import Folder from "../models/Folder.js";
+import QuizRoom from "../models/QuizRoom.js";
 
 // POST /api/documents  (multipart, field: pdf)
 export const uploadDocument = async (req, res) => {
@@ -45,13 +46,16 @@ export const listDocuments = async (req, res) => {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
     const skip = (page - 1) * limit;
     const folderPath = req.query.folderPath || "/";
+    const all = req.query.all === "true";
 
     let filter = { userId: req.user.id };
-    if (folderPath && folderPath !== "/") {
-      filter.folderPath = folderPath;
-    } else {
-      // include documents with no folderPath set (legacy documents)
-      filter.$or = [{ folderPath: "/" }, { folderPath: { $exists: false } }];
+    if (!all) {
+      if (folderPath && folderPath !== "/") {
+        filter.folderPath = folderPath;
+      } else {
+        // include documents with no folderPath set (legacy documents)
+        filter.$or = [{ folderPath: "/" }, { folderPath: { $exists: false } }];
+      }
     }
 
     const [docs, total] = await Promise.all([
@@ -210,7 +214,18 @@ export const getDashboard = async (req, res) => {
 
     const totalDocuments = docs.length;
     const totalFlashcards = docs.reduce((sum, d) => sum + d.flashcards.length, 0);
-    const totalQuizzes = docs.reduce((sum, d) => sum + (d.quiz?.attempts?.length || 0), 0);
+
+    // Count completed multiplayer rooms where this user submitted answers
+    const multiplayerQuizAttempts = await QuizRoom.countDocuments({
+      players: {
+        $elemMatch: {
+          userId: req.user.id,
+          submittedAt: { $ne: null }
+        }
+      }
+    });
+
+    const totalQuizzes = docs.reduce((sum, d) => sum + (d.quiz?.attempts?.length || 0), 0) + multiplayerQuizAttempts;
 
     const recentActivity = await Activity.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(10);
     const activityForStreak = await Activity.find({ userId: req.user.id }, "createdAt").sort({ createdAt: -1 });

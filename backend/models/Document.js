@@ -31,6 +31,7 @@ const quizAttemptSchema = new mongoose.Schema(
     score: { type: Number, required: true },
     total: { type: Number, required: true },
     answers: { type: [Number], default: [] }, // selected option index per question, -1 if unanswered
+    questions: { type: [quizQuestionSchema], default: [] },
     takenAt: { type: Date, default: Date.now },
   },
   { _id: false }

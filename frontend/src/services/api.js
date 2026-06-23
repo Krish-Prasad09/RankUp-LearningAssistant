@@ -46,7 +46,10 @@ export const uploadDocument = async (file, name, folderPath = "/") => {
   });
 };
 
-export const listDocuments = async (page = 1, limit = 10, folderPath = "/") => {
+export const listDocuments = async (page = 1, limit = 10, folderPath = "/", all = false) => {
+  if (all) {
+    return apiFetch(`${BASE_URL}/documents?page=${page}&limit=${limit}&all=true`);
+  }
   const fp = encodeURIComponent(folderPath || "/");
   return apiFetch(`${BASE_URL}/documents?page=${page}&limit=${limit}&folderPath=${fp}`);
 };
@@ -100,6 +103,14 @@ export const askQuestion = async (id, question, answerMode = "document") => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ question, answerMode }),
+  });
+};
+
+export const statelessChat = async (question, history = []) => {
+  return apiFetch(`${BASE_URL}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, history }),
   });
 };
 
@@ -206,5 +217,13 @@ export const joinQuizRoom = async (code) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code }),
+  });
+};
+
+export const analyzeQuiz = async (questions, answers) => {
+  return apiFetch(`${BASE_URL}/documents/quiz/analyze`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ questions, answers }),
   });
 };

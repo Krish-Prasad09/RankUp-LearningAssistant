@@ -9,6 +9,7 @@ import TasksPage from "./pages/TasksPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ChatPage from "./pages/ChatPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function ProtectedApp() {
@@ -31,6 +32,7 @@ function ProtectedApp() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/documents" element={<DocumentsPage />} />
         <Route path="/documents/:id" element={<DocumentWorkspacePage />} />
+        <Route path="/chat" element={<ChatPage />} />
         <Route path="/flashcards" element={<FlashcardsPage />} />
         <Route path="/quizzes" element={<QuizzesPage />} />
         <Route path="/tasks" element={<TasksPage />} />

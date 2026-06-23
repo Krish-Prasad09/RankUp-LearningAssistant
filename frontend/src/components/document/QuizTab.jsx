@@ -130,6 +130,11 @@ export default function QuizTab({ doc, setDoc }) {
   if (result) {
     return (
       <div className="text-slate-100">
+        {error && (
+          <div className="mb-4 bg-red-950/20 border border-red-900/30 text-red-400 text-sm rounded-xl px-4 py-3">
+            {error}
+          </div>
+        )}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-5 text-center">
           <p className="text-xs font-semibold text-emerald-400 tracking-wide mb-2">QUIZ COMPLETE</p>
           <p className="text-4xl font-bold text-white mb-1">
@@ -286,8 +291,8 @@ export default function QuizTab({ doc, setDoc }) {
               onClick={() => selectAnswer(oi)}
               className={`text-left border rounded-xl px-4 py-3 text-sm transition-colors ${
                 answers[current] === oi
-                  ? "border-emerald-700 bg-emerald-950/40 text-emerald-350"
-                  : "border-slate-800 text-slate-300 hover:border-emerald-800/60 hover:bg-slate-950 bg-slate-950/20 cursor-pointer"
+                  ? "border-indigo-700 bg-indigo-950/40 text-indigo-300 font-medium"
+                  : "border-slate-800 text-slate-300 hover:border-indigo-800/60 hover:bg-slate-950 bg-slate-950/20 cursor-pointer"
               }`}
             >
               {opt}
