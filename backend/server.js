@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
 import documentsRoutes from "./routes/documents.js";
 import dashboardRoutes from "./routes/dashboard.js";
@@ -27,9 +29,25 @@ app.use("/api/dashboard", auth, dashboardRoutes);
 app.use("/api/tasks", auth, tasksRoutes);
 app.use("/api/quiz-rooms", auth, quizRoomsRoutes);
 
-app.get("/", (req, res) => {
-  res.json({ message: "RankUp API is running" });
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (process.env.NODE_ENV === "production") {
+  const frontendBuildPath = path.join(__dirname, "../frontend/dist");
+  app.use(express.static(frontendBuildPath));
+  
+  // Custom middleware to route client SPA requests to index.html
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/socket.io")) {
+      return next();
+    }
+    res.sendFile(path.join(frontendBuildPath, "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.json({ message: "RankUp API is running" });
+  });
+}
 
 app.get("/api/health", (req, res) => {
   const dbState = ["disconnected", "connected", "connecting", "disconnecting"];

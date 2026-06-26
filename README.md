@@ -163,6 +163,44 @@ Open your browser and navigate to **[http://localhost:5173](http://localhost:517
 
 ---
 
+## 🌐 Production Deployment (Render + Vercel)
+
+Deploy RankUp in a split-architecture setup for maximum performance and cost efficiency.
+
+### 1. 🖥️ Backend Deployment: Render (Web Service)
+1. **Sign Up/Log In:** Connect your GitHub account to [Render](https://render.com/).
+2. **Create a New Web Service:**
+   - Select **Web Service** and choose your repository.
+   - Set **Root Directory** to `backend` (under Advanced Settings).
+   - **Environment:** `Node`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+3. **Environment Variables:**
+   Add these in Render under the **Environment** tab:
+   - `NODE_ENV` = `production`
+   - `GROQ_API_KEY` = *Your Groq API Key*
+   - `MONGODB_URI` = *Your MongoDB Atlas connection string*
+   - `JWT_SECRET` = *Your custom secret key for signing tokens*
+   - `CLIENT_URL` = *Your Vercel deployment URL (e.g. `https://your-app.vercel.app` — update this once you have your Vercel URL)*
+
+---
+
+### 2. 🎨 Frontend Deployment: Vercel (Static Hosting)
+1. **Sign Up/Log In:** Connect your GitHub account to [Vercel](https://vercel.com/).
+2. **Import Project:**
+   - Choose your repository.
+   - In the project configuration, set **Root Directory** to `frontend`.
+   - **Framework Preset:** `Vite` (Vercel automatically detects this).
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+3. **Environment Variables:**
+   Configure these in Vercel before hitting Deploy:
+   - `VITE_API_URL` = `https://your-backend-on-render.onrender.com/api` (use your actual Render backend service URL)
+   - `VITE_SOCKET_URL` = `https://your-backend-on-render.onrender.com` (your backend URL without the `/api` path)
+4. **Deploy:** Click **Deploy**. Vercel will handle the build. The pre-configured `frontend/vercel.json` file will automatically ensure React Router works correctly when pages are reloaded or navigated to directly.
+
+---
+
 ## 🔒 Environment Variable Details
 
 Here's a breakdown of the backend environment variables:
