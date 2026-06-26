@@ -218,7 +218,7 @@ export function attachQuizRoomsSocket(server) {
           } catch (err) {
             console.error("Player disconnect timeout handler error:", err);
           }
-        }, 5000);
+        }, 30000);
 
         playerDisconnectTimeouts.set(timeoutKey, timeoutId);
       } catch (error) {
