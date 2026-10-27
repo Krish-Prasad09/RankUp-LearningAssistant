@@ -19,14 +19,16 @@ export default function SidebarLayout() {
   return (
     <div className="min-h-screen flex bg-slate-950 text-slate-100">
       <aside className="w-64 flex-shrink-0 bg-slate-900 flex flex-col">
-        <div className="px-6 py-6 border-b border-slate-800">
+        <div className="px-6 py-5 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl hero-gradient flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/30">
-              📈
+            <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-sm">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
             </div>
             <div>
-              <span className="font-bold text-white text-lg tracking-tight">RankUp</span>
-              <p className="text-[11px] text-slate-400 -mt-0.5">Smart Learning Assistant</p>
+              <span className="font-bold text-white text-base tracking-tight">RankUp</span>
+              <p className="text-[11px] text-slate-400">Academic Assistant</p>
             </div>
           </div>
         </div>
@@ -62,7 +64,7 @@ export default function SidebarLayout() {
                   className="w-9 h-9 rounded-full object-cover shadow border border-slate-700"
                 />
               ) : (
-                <div className="w-9 h-9 rounded-full hero-gradient flex items-center justify-center text-white font-semibold text-sm shadow-md shadow-indigo-500/20">
+                <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-xs shadow-sm">
                   {user?.name ? user.name[0].toUpperCase() : "U"}
                 </div>
               )}

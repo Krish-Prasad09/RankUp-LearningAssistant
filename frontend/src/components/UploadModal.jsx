@@ -67,8 +67,8 @@ export default function UploadModal({ onClose, onUploaded, folderPath = "/" }) {
           }`}
         >
           <div className="flex justify-center mb-3">
-            <div className="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <DocIcon className="w-7 h-7 text-white" />
+            <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center text-indigo-400 shadow-sm">
+              <DocIcon className="w-6 h-6" />
             </div>
           </div>
           <p className="text-sm font-semibold text-slate-200">

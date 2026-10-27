@@ -59,18 +59,16 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Hero */}
-        <div className="hero-gradient rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4" />
-          <div className="absolute bottom-0 left-1/3 w-32 h-32 bg-white/5 rounded-full translate-y-1/2" />
-          <div className="relative">
-            <h2 className="text-2xl font-bold mb-2">Welcome back! 👋</h2>
-            <p className="text-indigo-100 text-sm max-w-lg mb-5">
-              Upload PDFs, chat with your documents, generate summaries, flashcards, and quizzes — all powered by AI.
+        {/* Welcome Banner */}
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-7 mb-8 text-white relative">
+          <div className="max-w-xl">
+            <h2 className="text-2xl font-semibold tracking-tight mb-2">Welcome back{user?.name ? `, ${user.name}` : ""}</h2>
+            <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+              Upload study materials, generate custom flashcards, review summaries, and challenge peers in multiplayer quiz rooms.
             </p>
             <Link
               to="/documents"
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors border border-white/20"
+              className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors shadow-sm"
             >
               <DocIcon className="w-4 h-4" />
               Go to Documents

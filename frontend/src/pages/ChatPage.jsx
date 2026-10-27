@@ -74,12 +74,14 @@ export default function ChatPage() {
           <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4 bg-slate-950/20">
             {messages.length === 0 && (
               <div className="flex-1 flex flex-col items-center justify-center text-center px-6 max-w-md mx-auto">
-                <div className="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 text-2xl">
-                  🤖
+                <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-indigo-400 shadow-sm">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
                 </div>
                 <p className="text-sm font-semibold text-slate-200 mb-1.5">Start a conversation</p>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Ask anything! This assistant uses its broad knowledge to help you learn, summarize concepts, draft explanations, or research topics.
+                  Ask anything to help you learn, summarize concepts, draft explanations, or research study topics.
                 </p>
               </div>
             )}

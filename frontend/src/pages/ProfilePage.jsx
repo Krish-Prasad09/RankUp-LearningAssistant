@@ -42,7 +42,7 @@ export default function ProfilePage() {
                 className="w-20 h-20 rounded-2xl object-cover shadow border border-slate-800"
               />
             ) : (
-              <div className="w-20 h-20 rounded-2xl hero-gradient text-white flex items-center justify-center font-bold text-3xl shadow-lg shadow-indigo-500/20">
+              <div className="w-16 h-16 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-2xl shadow-sm">
                 {user?.name ? user.name[0].toUpperCase() : "U"}
               </div>
             )}

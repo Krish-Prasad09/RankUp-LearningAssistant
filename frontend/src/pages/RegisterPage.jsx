@@ -62,86 +62,82 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen w-full relative flex flex-col justify-between bg-slate-950 overflow-x-hidden">
-      {/* Blurred Campus Background with Dark Overlay */}
+      {/* Blurred Campus Background with Dark Overlay (No radial orbs) */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <img
           src="/campus-bg.png"
           alt="Campus Background"
-          className="w-full h-full object-cover scale-105 filter blur-[6px] brightness-[0.35] contrast-[1.1]"
+          className="w-full h-full object-cover scale-105 filter blur-[5px] brightness-[0.3] contrast-[1.1]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-900/75 to-slate-950/90" />
-        {/* Ambient radial glow */}
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/15 blur-[130px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/15 blur-[130px]" />
+        <div className="absolute inset-0 bg-slate-950/85" />
       </div>
 
-      {/* Top Header - Centered with Subheading */}
-      <header className="w-full pt-8 pb-2 text-center z-20 animate-fade-in px-4 max-w-4xl mx-auto">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-xl">
-          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300">RANK-UP</span>
+      {/* Header - Clean Typography without Harsh Gradients */}
+      <header className="w-full pt-10 pb-2 text-center z-20 animate-fade-in px-4 max-w-4xl mx-auto">
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
+          Welcome to <span className="text-indigo-400">RankUp</span>
         </h1>
-        <p className="text-sm sm:text-base text-slate-300 mt-2.5 font-normal max-w-2xl mx-auto drop-shadow leading-relaxed">
-          Turn your study notes into live multiplayer quiz battles. Challenge your peers &amp; rank up.
+        <p className="text-sm sm:text-base text-slate-300 mt-2 font-normal max-w-xl mx-auto leading-relaxed">
+          Turn your study notes into live multiplayer quiz battles. Challenge your peers and rank up.
         </p>
       </header>
 
-      {/* Main Content Area: Left Panel, Right Earth */}
-      <main className="w-full max-w-6xl mx-auto flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-16 px-6 lg:px-8 py-4 z-10 my-auto">
-        {/* Register Panel (Left) */}
-        <div className="w-full lg:w-[440px] max-w-md bg-slate-900/85 border border-slate-700/60 backdrop-blur-2xl rounded-3xl p-8 sm:p-9 shadow-2xl animate-fade-in">
+      {/* Main Content Area */}
+      <main className="w-full max-w-6xl mx-auto flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-14 px-6 lg:px-8 py-6 z-10 my-auto">
+        {/* Register Panel (Left) - Structured SaaS Card (No liquid glass / No puffy corners) */}
+        <div className="w-full lg:w-[420px] max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl p-7 sm:p-8 shadow-xl shadow-black/40 backdrop-blur-md animate-fade-in">
           <div className="mb-6">
-            <span className="text-xs font-bold tracking-widest text-slate-400 uppercase">START LEARNING</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400 tracking-tight mt-1 mb-1.5">
-              Create Account.
+            <h2 className="text-xl font-semibold text-white tracking-tight">
+              Create an account
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">Join your peers and elevate your study performance.</p>
+            <p className="text-xs text-slate-400 mt-1">Join your classmates and start collaborating</p>
           </div>
 
           {error && (
-            <div className="mb-5 bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-2xl px-4 py-3">
+            <div className="mb-5 bg-red-950/40 border border-red-800/50 text-red-300 text-xs rounded-lg px-3.5 py-2.5">
               {error}
             </div>
           )}
 
           {!import.meta.env.VITE_GOOGLE_CLIENT_ID && (
-            <div className="mb-5 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs rounded-2xl px-4 py-3">
+            <div className="mb-5 bg-amber-950/40 border border-amber-800/40 text-amber-300 text-xs rounded-lg px-3.5 py-2.5">
               <strong>Note:</strong> Google Client ID not detected in `.env`.
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Full Name</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Full name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Johnson"
-                className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition placeholder:text-slate-600"
                 disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email Address</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="alex@university.edu"
-                className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition placeholder:text-slate-600"
                 disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Password</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition placeholder:text-slate-600"
                 disabled={loading}
               />
             </div>
@@ -149,10 +145,10 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 h-[48px] rounded-xl font-bold text-base text-white hero-gradient hover:opacity-95 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all flex items-center justify-center cursor-pointer"
+              className="w-full mt-2 h-10 rounded-lg font-medium text-sm text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 shadow-sm transition-colors flex items-center justify-center cursor-pointer disabled:opacity-60"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 "Create Account"
               )}
@@ -161,18 +157,18 @@ export default function RegisterPage() {
 
           <div className="relative my-6 flex items-center justify-center">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700/60" />
+              <div className="w-full border-t border-slate-800" />
             </div>
-            <span className="relative bg-[#0f172a] px-3 text-xs text-slate-500 uppercase tracking-wider">Or continue with</span>
+            <span className="relative bg-slate-900 px-3 text-xs text-slate-500 uppercase tracking-wider font-medium">Or continue with</span>
           </div>
 
           <div className="flex justify-center mb-6">
             <div id="google-signup-btn" className="w-full flex justify-center" style={{ minHeight: "40px" }} />
           </div>
 
-          <p className="text-center text-sm text-slate-400">
+          <p className="text-center text-xs text-slate-400">
             Already have an account?{" "}
-            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
               Sign In
             </Link>
           </p>
@@ -180,15 +176,21 @@ export default function RegisterPage() {
 
         {/* Proportioned Rotating Earth (Right) */}
         <div className="w-full lg:w-1/2 flex items-center justify-center">
-          <div className="w-full h-[380px] sm:h-[460px] lg:h-[540px] cursor-grab active:cursor-grabbing">
+          <div className="w-full h-[380px] sm:h-[450px] lg:h-[520px] cursor-grab active:cursor-grabbing">
             <EarthCanvas />
           </div>
         </div>
       </main>
 
-      {/* Footer subtle tag */}
-      <footer className="w-full py-4 text-center text-xs text-slate-500 z-10">
-        RankUp Academic Assistant &copy; {new Date().getFullYear()} &bull; Empowering smarter study
+      {/* Production Footer with Real TOS and Privacy Links */}
+      <footer className="w-full py-5 text-center text-xs text-slate-500 z-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4">
+        <span>&copy; {new Date().getFullYear()} RankUp, Inc. All rights reserved.</span>
+        <span className="text-slate-800 hidden sm:inline">&bull;</span>
+        <a href="#" className="hover:text-slate-400 transition-colors">Terms of Service</a>
+        <span className="text-slate-800">&bull;</span>
+        <a href="#" className="hover:text-slate-400 transition-colors">Privacy Policy</a>
+        <span className="text-slate-800">&bull;</span>
+        <a href="#" className="hover:text-slate-400 transition-colors">Security</a>
       </footer>
     </div>
   );

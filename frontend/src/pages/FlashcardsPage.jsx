@@ -72,9 +72,9 @@ export default function FlashcardsPage() {
         {loading && <p className="text-sm text-slate-400">Loading...</p>}
 
         {!loading && groups.length === 0 && !error && (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center shadow-sm">
-            <div className="w-14 h-14 rounded-2xl hero-gradient flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/20">
-              <CardIcon className="w-7 h-7 text-white" />
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center shadow-sm">
+            <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center mx-auto mb-4 text-indigo-400 shadow-sm">
+              <CardIcon className="w-6 h-6" />
             </div>
             <p className="text-sm font-semibold text-slate-200 mb-1">No flashcards yet</p>
             <p className="text-xs text-slate-450 mb-5">
@@ -96,8 +96,8 @@ export default function FlashcardsPage() {
                   className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-800/40 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl hero-gradient flex items-center justify-center text-white flex-shrink-0">
-                      <DocIcon className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700/80 flex items-center justify-center text-indigo-400 flex-shrink-0">
+                      <DocIcon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-white truncate">{doc.name}</p>

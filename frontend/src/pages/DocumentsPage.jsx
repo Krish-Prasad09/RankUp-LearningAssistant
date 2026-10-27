@@ -227,10 +227,12 @@ export default function DocumentsPage() {
 
         {/* Empty state */}
         {documents.length === 0 && folders.length === 0 && !loading && (
-          <div className="text-center py-16 bg-slate-900 border border-slate-800 rounded-2xl">
-            <div className="text-5xl mb-4 animate-float">📁</div>
-            <p className="text-slate-300 font-medium mb-2">No folders or documents yet</p>
-            <p className="text-slate-500 text-sm mb-6">Create a folder or upload a PDF to get started</p>
+          <div className="text-center py-16 bg-slate-900 border border-slate-800 rounded-xl">
+            <div className="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center mx-auto mb-4 text-slate-400">
+              <FolderIcon className="w-6 h-6" />
+            </div>
+            <p className="text-slate-300 font-medium mb-1.5">No folders or documents yet</p>
+            <p className="text-slate-500 text-sm mb-6">Create a folder or upload a study document to get started</p>
             <button onClick={() => setShowUpload(true)} className="btn-primary">
               Upload PDF
             </button>
