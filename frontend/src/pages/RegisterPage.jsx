@@ -75,14 +75,17 @@ export default function RegisterPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/15 blur-[130px]" />
       </div>
 
-      {/* Top Header - Centered Bold Title (No subline, like reference pic) */}
-      <header className="w-full pt-8 pb-4 text-center z-20 animate-fade-in px-4">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white uppercase drop-shadow-xl">
-          WELCOME TO RANK-UP
+      {/* Top Header - Centered with Subheading */}
+      <header className="w-full pt-8 pb-2 text-center z-20 animate-fade-in px-4 max-w-4xl mx-auto">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-xl">
+          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300">RANK-UP</span>
         </h1>
+        <p className="text-sm sm:text-base text-slate-300 mt-2.5 font-normal max-w-2xl mx-auto drop-shadow leading-relaxed">
+          Turn your study notes into live multiplayer quiz battles. Challenge your peers &amp; rank up.
+        </p>
       </header>
 
-      {/* Main Content Area: Left Panel, Right Earth (nicely proportioned) */}
+      {/* Main Content Area: Left Panel, Right Earth */}
       <main className="w-full max-w-6xl mx-auto flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-16 px-6 lg:px-8 py-4 z-10 my-auto">
         {/* Register Panel (Left) */}
         <div className="w-full lg:w-[440px] max-w-md bg-slate-900/85 border border-slate-700/60 backdrop-blur-2xl rounded-3xl p-8 sm:p-9 shadow-2xl animate-fade-in">
