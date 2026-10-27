@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import EarthCanvas from "./Earth";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -60,99 +61,114 @@ export default function RegisterPage() {
   }, [googleLogin]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 py-8 relative overflow-hidden">
       {/* Background radial effects */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[120px]" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/10 blur-[120px]" />
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-md bg-slate-800/80 border border-slate-700/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl animate-fade-in relative z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex w-12 h-12 rounded-2xl hero-gradient items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-indigo-500/30 mb-4 animate-float">
-            📈
+      <div className="w-full max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-12 relative z-10">
+        {/* Earth 3D Visual */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
+          <div className="w-full h-[320px] sm:h-[420px] lg:h-[580px] cursor-grab active:cursor-grabbing">
+            <EarthCanvas />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Create Account</h1>
-          <p className="text-sm text-slate-400 mt-1">Get started with your smart learning assistant</p>
+          <div className="text-center mt-2 pointer-events-none select-none">
+            <span className="text-xs font-semibold tracking-wider uppercase text-indigo-400/80 bg-slate-800/80 border border-slate-700/60 rounded-full px-3.5 py-1 backdrop-blur-md">
+              🌍 Interactive 3D World
+            </span>
+          </div>
         </div>
 
-        {error && (
-          <div className="mb-5 bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-2xl px-4 py-3">
-            {error}
+        {/* Register Form Card */}
+        <div className="w-full lg:w-1/2 max-w-md bg-slate-800/80 border border-slate-700/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl animate-fade-in">
+          <div className="text-center mb-8">
+            <div className="inline-flex w-12 h-12 rounded-2xl hero-gradient items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-indigo-500/30 mb-4 animate-float">
+              📈
+            </div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Create Account</h1>
+            <p className="text-sm text-slate-400 mt-1">Get started with your smart learning assistant</p>
           </div>
-        )}
 
-        {!import.meta.env.VITE_GOOGLE_CLIENT_ID && (
-          <div className="mb-5 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs rounded-2xl px-4 py-3">
-            <strong>Note:</strong> Google Client ID not detected in `.env`. Check the documentation to configure Google OAuth.
-          </div>
-        )}
+          {error && (
+            <div className="mb-5 bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-2xl px-4 py-3">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Alex Johnson"
-              className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+          {!import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+            <div className="mb-5 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs rounded-2xl px-4 py-3">
+              <strong>Note:</strong> Google Client ID not detected in `.env`. Check the documentation to configure Google OAuth.
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Full Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Alex Johnson"
+                className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="alex@example.com"
+                className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
+                disabled={loading}
+              />
+            </div>
+
+            <button
+              type="submit"
               disabled={loading}
-            />
+              className="w-full mt-2 btn-primary flex justify-center items-center h-[46px] relative"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+          </form>
+
+          <div className="relative my-6 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-700/50" />
+            </div>
+            <span className="relative bg-[#1e293b] px-3 text-xs text-slate-500 uppercase tracking-wider">Or continue with</span>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Email Address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="alex@example.com"
-              className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
-              disabled={loading}
-            />
+          <div className="flex justify-center mb-6">
+            <div id="google-signup-btn" className="w-full flex justify-center" style={{ minHeight: "40px" }} />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-600"
-              disabled={loading}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-2 btn-primary flex justify-center items-center h-[46px] relative"
-          >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              "Sign Up"
-            )}
-          </button>
-        </form>
-
-        <div className="relative my-6 flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-700/50" />
-          </div>
-          <span className="relative bg-[#1e293b] px-3 text-xs text-slate-500 uppercase tracking-wider">Or continue with</span>
+          <p className="text-center text-sm text-slate-400">
+            Already have an account?{" "}
+            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+              Sign In
+            </Link>
+          </p>
         </div>
-
-        <div className="flex justify-center mb-6">
-          <div id="google-signup-btn" className="w-full flex justify-center" style={{ minHeight: "40px" }} />
-        </div>
-
-        <p className="text-center text-sm text-slate-400">
-          Already have an account?{" "}
-          <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-            Sign In
-          </Link>
-        </p>
       </div>
     </div>
   );
