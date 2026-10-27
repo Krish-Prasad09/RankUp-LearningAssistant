@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import { getDashboard } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const ACTIVITY_LABELS = {
   accessed_document: "Accessed Document",
@@ -18,6 +19,7 @@ const ACTIVITY_COLORS = {
 };
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const location = useLocation();
   const [stats, setStats] = useState(null);
   const [error, setError] = useState("");
