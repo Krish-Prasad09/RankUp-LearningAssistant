@@ -1,6 +1,5 @@
 import QuizRoom from "../models/QuizRoom.js";
 import User from "../models/User.js";
-import Activity from "../models/Activity.js";
 
 export const createRoom = async (req, res) => {
   try {
@@ -61,77 +60,6 @@ export const getRoom = async (req, res) => {
   } catch (error) {
     console.error("Get quiz room error:", error);
     res.status(500).json({ error: "Failed to load quiz room." });
-  }
-};
-
-export const startRoom = async (req, res) => {
-  try {
-    const room = await QuizRoom.findOne({ code: req.params.code.toUpperCase() });
-    if (!room) return res.status(404).json({ error: "Room not found." });
-    if (String(room.hostUserId) !== req.user.id) return res.status(403).json({ error: "Only the host can start the room." });
-    room.status = "active";
-    await room.save();
-    res.json({ room: toRoom(room, req.user.id) });
-  } catch (error) {
-    console.error("Start quiz room error:", error);
-    res.status(500).json({ error: "Failed to start quiz room." });
-  }
-};
-
-export const submitRoomAnswers = async (req, res) => {
-  try {
-    const room = await QuizRoom.findOne({ code: req.params.code.toUpperCase() });
-    if (!room) return res.status(404).json({ error: "Room not found." });
-    if (room.status !== "active") return res.status(400).json({ error: "Room is not active." });
-
-    const player = room.players.find((p) => String(p.userId) === req.user.id);
-    if (!player) return res.status(403).json({ error: "Join this room first." });
-
-    const rawAnswers = Array.isArray(req.body.answers) ? req.body.answers.map((a) => parseInt(a)) : [];
-    const answers = room.questions.map((_, idx) => (Number.isInteger(rawAnswers[idx]) ? rawAnswers[idx] : -1));
-
-    player.answers = answers;
-    player.score = room.questions.reduce((score, q, index) => score + (answers[index] === q.correctIndex ? 1 : 0), 0);
-    player.submittedAt = new Date();
-
-    if (room.players.length > 0 && room.players.every((p) => p.submittedAt)) {
-      room.status = "finished";
-    }
-
-    await room.save();
-
-    const activityExists = await Activity.exists({
-      userId: req.user.id,
-      type: "attempted_quiz",
-      "meta.roomCode": room.code,
-    });
-    if (!activityExists) {
-      await Activity.create({
-        userId: req.user.id,
-        type: "attempted_quiz",
-        documentName: room.title || "Multiplayer Quiz",
-        meta: { score: player.score, total: room.questions.length, roomCode: room.code },
-      });
-    }
-
-    res.json({ room: toRoom(room, req.user.id) });
-  } catch (error) {
-    console.error("Submit room answers error:", error);
-    res.status(500).json({ error: "Failed to submit multiplayer quiz." });
-  }
-};
-
-export const finishRoom = async (req, res) => {
-  try {
-    const room = await QuizRoom.findOne({ code: req.params.code.toUpperCase() });
-    if (!room) return res.status(404).json({ error: "Room not found." });
-    if (String(room.hostUserId) !== req.user.id) return res.status(403).json({ error: "Only the host can finish the room." });
-    room.status = "finished";
-    await room.save();
-    res.json({ room: toRoom(room, req.user.id) });
-  } catch (error) {
-    console.error("Finish quiz room error:", error);
-    res.status(500).json({ error: "Failed to finish quiz room." });
   }
 };
 

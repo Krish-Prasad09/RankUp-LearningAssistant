@@ -33,7 +33,6 @@ const router = express.Router();
 router.get("/folders", listFolders);
 router.post("/folders", createFolder);
 router.delete("/folders", deleteFolder);
-router.post("/folders/delete", deleteFolder);
 
 // Documents CRUD
 router.post("/", upload.single("pdf"), uploadDocument);

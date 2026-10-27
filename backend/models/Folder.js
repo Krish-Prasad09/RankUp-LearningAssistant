@@ -5,7 +5,6 @@ const folderSchema = new mongoose.Schema({
   name: { type: String, required: true },
   path: { type: String, required: true },
   parent: { type: String, default: '/' },
-  aiSettings: { type: Object, default: { chat: true, summary: true, flashcards: true, quizzes: true } },
 }, { timestamps: true });
 
 // Compound index to ensure path uniqueness per user

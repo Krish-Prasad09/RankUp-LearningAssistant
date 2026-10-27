@@ -21,7 +21,6 @@ export default function QuizzesPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [folders, setFolders] = useState([]);
-  const [selected, setSelected] = useState(new Set());
   const [difficulty, setDifficulty] = useState("medium");
   const [sourceMode, setSourceMode] = useState("document");
   const [total, setTotal] = useState(5);
@@ -127,15 +126,6 @@ export default function QuizzesPage() {
       socket.off("disconnect", handleDisconnect);
     };
   }, [room?.code, navigate]);
-
-  const toggle = (path) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(path)) next.delete(path);
-      else next.add(path);
-      return next;
-    });
-  };
 
   const handleGenerate = async () => {
     if (selectedDocIds.size === 0) return setError("Select at least one document to generate a quiz from.");
