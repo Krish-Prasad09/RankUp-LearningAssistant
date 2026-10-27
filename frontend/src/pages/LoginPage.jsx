@@ -65,20 +65,8 @@ export default function LoginPage() {
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-6xl mx-auto flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-12 relative z-10">
-        {/* Earth 3D Visual */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
-          <div className="w-full h-[320px] sm:h-[420px] lg:h-[580px] cursor-grab active:cursor-grabbing">
-            <EarthCanvas />
-          </div>
-          <div className="text-center mt-2 pointer-events-none select-none">
-            <span className="text-xs font-semibold tracking-wider uppercase text-indigo-400/80 bg-slate-800/80 border border-slate-700/60 rounded-full px-3.5 py-1 backdrop-blur-md">
-              🌍 Interactive 3D World
-            </span>
-          </div>
-        </div>
-
-        {/* Login Form Card */}
+      <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-12 relative z-10">
+        {/* Login Form Card (Left) */}
         <div className="w-full lg:w-1/2 max-w-md bg-slate-800/80 border border-slate-700/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl animate-fade-in">
           <div className="text-center mb-8">
             <div className="inline-flex w-12 h-12 rounded-2xl hero-gradient items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-indigo-500/30 mb-4 animate-float">
@@ -155,6 +143,13 @@ export default function LoginPage() {
               Create one
             </Link>
           </p>
+        </div>
+
+        {/* Earth 3D Visual (Right) */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center">
+          <div className="w-full h-[320px] sm:h-[420px] lg:h-[580px] cursor-grab active:cursor-grabbing">
+            <EarthCanvas />
+          </div>
         </div>
       </div>
     </div>
