@@ -148,7 +148,10 @@ export default function RegisterPage() {
               className="w-full mt-2 h-10 rounded-lg font-medium text-sm text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 shadow-sm transition-colors flex items-center justify-center cursor-pointer disabled:opacity-60"
             >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Creating account...</span>
+                </div>
               ) : (
                 "Create Account"
               )}
@@ -162,7 +165,7 @@ export default function RegisterPage() {
             <span className="relative bg-slate-900 px-3 text-xs text-slate-500 uppercase tracking-wider font-medium">Or continue with</span>
           </div>
 
-          <div className="flex justify-center mb-6">
+          <div className={`flex justify-center mb-6 transition-opacity ${loading ? "opacity-50 pointer-events-none" : ""}`}>
             <div id="google-signup-btn" className="w-full flex justify-center" style={{ minHeight: "40px" }} />
           </div>
 
