@@ -1,9 +1,22 @@
 import { PDFParse } from "pdf-parse";
 
 // Direct call to Groq API
-const callGroqDirect = async (systemPrompt, userPrompt) => {
+const callGroqDirect = async (systemPrompt, userPrompt, modelOverride = null) => {
   const apiKey = process.env.GROQ_API_KEY;
-  const model = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+  let model = modelOverride || process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+
+  // Automatically migrate legacy or deprecated models that are known to return 404
+  if (!modelOverride && (
+    model === "llama-3.3-70b-versatile" ||
+    model.includes("llama-3.3") ||
+    model.includes("llama3") ||
+    model.includes("llama-3.1") ||
+    model.includes("mixtral") ||
+    model.includes("gemma")
+  )) {
+    model = "openai/gpt-oss-120b";
+  }
+
   const url = "https://api.groq.com/openai/v1/chat/completions";
 
   const response = await fetch(url, {
@@ -46,7 +59,7 @@ const callGroqDirect = async (systemPrompt, userPrompt) => {
   return text;
 };
 
-// Call Groq API with retries for rate limits and transient server errors (429, 500, 502, 503, 504)
+// Call Groq API with retries for rate limits, 404 model fallback, and transient server errors
 export const callGroq = async (systemPrompt, userPrompt, retries = 5, delay = 2000) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -54,6 +67,18 @@ export const callGroq = async (systemPrompt, userPrompt, retries = 5, delay = 20
     } catch (err) {
       const errMsg = String(err.message || "").toLowerCase();
       const status = err.status;
+
+      // If a model is not found or unsupported (404), fall back to active models automatically
+      if (status === 404 || errMsg.includes("does not exist") || errMsg.includes("not found")) {
+        console.warn(`Groq model not found (404). Falling back to openai/gpt-oss-120b...`);
+        try {
+          return await callGroqDirect(systemPrompt, userPrompt, "openai/gpt-oss-120b");
+        } catch (fbErr) {
+          console.warn(`Fallback to openai/gpt-oss-120b failed, trying openai/gpt-oss-20b...`);
+          return await callGroqDirect(systemPrompt, userPrompt, "openai/gpt-oss-20b");
+        }
+      }
+
       const isRetryable =
         status === 429 ||
         status === 500 ||
