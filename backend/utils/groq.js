@@ -3,7 +3,7 @@ import { PDFParse } from "pdf-parse";
 // Direct call to Groq API
 const callGroqDirect = async (systemPrompt, userPrompt) => {
   const apiKey = process.env.GROQ_API_KEY;
-  const model = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  const model = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
   const url = "https://api.groq.com/openai/v1/chat/completions";
 
   const response = await fetch(url, {
