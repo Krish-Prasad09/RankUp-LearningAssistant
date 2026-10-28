@@ -66,7 +66,7 @@ export default function LoginPage() {
         <img
           src="/campus-bg.png"
           alt="Campus Background"
-          className="w-full h-full object-cover scale-105 filter blur-[5px] brightness-[0.3] contrast-[1.1]"
+          className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.3] contrast-[1.1]"
         />
         <div className="absolute inset-0 bg-slate-950/85" />
       </div>
