@@ -110,10 +110,9 @@ export const callGroqWithRetry = async (systemPrompt, userPrompt, retries = 5, d
   return callGroq(systemPrompt, userPrompt, retries, delay);
 };
 
-// Extracts text from base64 PDF
-export const extractTextFromPdf = async (pdfBase64) => {
-  if (!pdfBase64) return "";
-  const pdfBuffer = Buffer.from(pdfBase64, "base64");
+// Extracts text directly from a raw PDF buffer (used at upload time)
+export const extractTextFromBuffer = async (pdfBuffer) => {
+  if (!pdfBuffer) return "";
   const parser = new PDFParse({ data: pdfBuffer });
   try {
     const result = await parser.getText();

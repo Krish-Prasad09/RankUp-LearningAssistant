@@ -1,6 +1,6 @@
 import Document from "../models/Document.js";
 import Activity from "../models/Activity.js";
-import { callGroq, extractTextFromPdf } from "../utils/groq.js";
+import { callGroq } from "../utils/groq.js";
 
 // POST /api/documents/:id/chat
 // Sends the question + stored PDF + chat history to Groq, saves both
@@ -35,8 +35,8 @@ export const askQuestion = async (req, res) => {
       ? "Answer using the uploaded PDF document as the primary source, and use your pre-trained knowledge to add relevant, current, or clarifying context when it helps. Note: Live Google Search grounding is not available, so do not refer to live web searches."
       : "Answer based strictly on the content of the uploaded PDF document. Do not use outside knowledge. If the answer is not found in the PDF, clearly say so.";
 
-    // Extract PDF text for context
-    const pdfText = await extractTextFromPdf(doc.pdfBase64);
+    // Use pre-extracted text directly (zero parsing overhead)
+    const pdfText = doc.extractedText || "";
 
     const systemPrompt = `You are a helpful learning assistant. Here is the text content extracted from the uploaded PDF document:
 ---

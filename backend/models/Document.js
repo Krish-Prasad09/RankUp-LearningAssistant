@@ -52,7 +52,7 @@ const documentSchema = new mongoose.Schema(
     originalFileName: { type: String, required: true },
     mimeType: { type: String, default: "application/pdf" },
     size: { type: Number, required: true }, // bytes
-    pdfBase64: { type: String, required: true },
+    extractedText: { type: String, default: "" },
     folderPath: { type: String, default: "/" },
 
     chatHistory: { type: [messageSchema], default: [] },
@@ -72,7 +72,7 @@ const documentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Lightweight projection for list views (excludes heavy pdfBase64)
+// Lightweight projection for list views (excludes extractedText)
 documentSchema.statics.listProjection =
   "name originalFileName size createdAt updatedAt lastAccessedAt folderPath flashcards quiz.attempts chatHistory summary.generated";
 

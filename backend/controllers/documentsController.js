@@ -3,6 +3,7 @@ import Activity from "../models/Activity.js";
 import mongoose from "mongoose";
 import Folder from "../models/Folder.js";
 import QuizRoom from "../models/QuizRoom.js";
+import { extractTextFromBuffer } from "../utils/groq.js";
 
 // POST /api/documents  (multipart, field: pdf)
 export const uploadDocument = async (req, res) => {
@@ -15,13 +16,16 @@ export const uploadDocument = async (req, res) => {
     const name = (req.body.name && req.body.name.trim()) || pdfFile.originalname.replace(/\.pdf$/i, "");
     const folderPath = (req.body.folderPath && req.body.folderPath.trim()) || "/";
 
+    // Extract text ONCE at upload time, avoiding storing heavy binary Base64 in MongoDB
+    const extractedText = await extractTextFromBuffer(pdfFile.buffer);
+
     const doc = await Document.create({
       userId: req.user.id,
       name,
       originalFileName: pdfFile.originalname,
       mimeType: pdfFile.mimetype,
       size: pdfFile.size,
-      pdfBase64: pdfFile.buffer.toString("base64"),
+      extractedText,
       folderPath,
     });
 
@@ -79,7 +83,7 @@ export const listDocuments = async (req, res) => {
   }
 };
 
-// GET /api/documents/:id  -> full document including pdfBase64 (for viewer)
+// GET /api/documents/:id  -> full document including extractedText
 export const getDocument = async (req, res) => {
   try {
     const doc = await Document.findOne({ _id: req.params.id, userId: req.user.id });
@@ -274,7 +278,7 @@ function toFull(doc) {
     originalFileName: doc.originalFileName,
     mimeType: doc.mimeType,
     size: doc.size,
-    pdfBase64: doc.pdfBase64,
+    extractedText: doc.extractedText || "",
     chatHistory: doc.chatHistory,
     summary: doc.summary,
     flashcards: doc.flashcards,

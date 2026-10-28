@@ -1,6 +1,6 @@
 import Document from "../models/Document.js";
 import Activity from "../models/Activity.js";
-import { callGroq, extractTextFromPdf, parseJsonResponse } from "../utils/groq.js";
+import { callGroq, parseJsonResponse } from "../utils/groq.js";
 
 // GET /api/documents/:id/summary
 // Generates the summary on first request and caches it; subsequent
@@ -18,8 +18,8 @@ export const getSummary = async (req, res) => {
       return res.json({ summary: doc.summary });
     }
 
-    // Extract PDF text for context
-    const pdfText = await extractTextFromPdf(doc.pdfBase64);
+    // Use pre-extracted text directly
+    const pdfText = doc.extractedText || "";
 
     const systemPrompt = `You are an expert study assistant. Here is the text content extracted from the uploaded PDF document:
 ---

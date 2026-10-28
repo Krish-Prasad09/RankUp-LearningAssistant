@@ -1,6 +1,6 @@
 import Document from "../models/Document.js";
 import Activity from "../models/Activity.js";
-import { callGroq, extractTextFromPdf, parseJsonResponse } from "../utils/groq.js";
+import { callGroq, parseJsonResponse } from "../utils/groq.js";
 import { buildFlashcardsPdf } from "../utils/pdfExport.js";
 
 const FLASHCARDS_PER_GENERATION = 5;
@@ -33,8 +33,8 @@ export const generateFlashcards = async (req, res) => {
             .join("\n")}`
         : "";
 
-    // Extract PDF text for context
-    const pdfText = await extractTextFromPdf(doc.pdfBase64);
+    // PDF text for context
+    const pdfText = doc.extractedText || "";
 
     const systemPrompt = `You are an expert study assistant. Here is the text content extracted from the uploaded PDF document:
 ---

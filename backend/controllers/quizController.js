@@ -1,7 +1,7 @@
 import Document from "../models/Document.js";
 import Folder from "../models/Folder.js";
 import Activity from "../models/Activity.js";
-import { callGroq, callGroqWithRetry, extractTextFromPdf, parseJsonResponse } from "../utils/groq.js";
+import { callGroq, callGroqWithRetry, parseJsonResponse } from "../utils/groq.js";
 import { buildQuizPdf } from "../utils/pdfExport.js";
 
 const ALLOWED_QUIZ_COUNTS = [5, 10, 15, 20];
@@ -123,8 +123,8 @@ export const generateQuiz = async (req, res) => {
       ? "Use the uploaded PDF as the syllabus and primary scope. You may use your internal knowledge to include relevant exam-style questions, examples, and current context that match the PDF topics. Do not introduce unrelated topics. Note: Live Google Search grounding is not available."
       : "Use only the uploaded PDF content. Do not use outside knowledge or unrelated topics.";
 
-    // Extract PDF text for context
-    const pdfText = await extractTextFromPdf(doc.pdfBase64);
+    // PDF text for context
+    const pdfText = doc.extractedText || "";
 
     // Collect previously seen questions to avoid duplication
     const avoidQuestions = [
@@ -338,7 +338,7 @@ export const generateQuizFromFolders = async (req, res) => {
       .filter((req) => req.count > 0)
       .map(async (req) => {
         try {
-          const pdfText = await extractTextFromPdf(req.doc.pdfBase64);
+          const pdfText = req.doc.extractedText || "";
           return await generateQuizQuestionsFromText(
             pdfText,
             req.count,
