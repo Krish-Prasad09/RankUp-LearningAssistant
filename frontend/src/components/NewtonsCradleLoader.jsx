@@ -4,8 +4,8 @@ import React from "react";
  * NewtonsCradleLoader
  * A physics-inspired Newton's Cradle loading screen styled for the dark navy / bluish theme.
  * Uses HTML elements with transform-origin: top center for 100% reliable cross-browser physics.
- * Left ball swings from -60deg (outward left) to 0deg (impact), transferring momentum
- * to the right ball which swings from 0deg to +60deg (outward right) and back.
+ * Left ball swings from +60deg (outward left) to 0deg (impact), transferring momentum
+ * to the right ball which swings from 0deg to -60deg (outward right) and back.
  */
 export default function NewtonsCradleLoader({
   message = "loading...",
@@ -39,7 +39,7 @@ export default function NewtonsCradleLoader({
 
         {/* 5 Pendulums in Flex Layout (Each 28px wide so balls touch with 0 gap) */}
         <div className="relative flex justify-center items-start w-[140px] h-[126px] overflow-visible">
-          {/* Ball 0 (Leftmost - Swings outward to -60deg, then back to 0deg impact) */}
+          {/* Ball 0 (Leftmost - Swings outward to +60deg left, then back to 0deg impact) */}
           <div
             className="w-[28px] h-[120px] origin-top animate-cradle-left flex flex-col items-center"
             style={{ transformOrigin: "top center" }}
@@ -83,7 +83,7 @@ export default function NewtonsCradleLoader({
             </div>
           </div>
 
-          {/* Ball 4 (Rightmost - Swings outward to +60deg, then back to 0deg impact) */}
+          {/* Ball 4 (Rightmost - Swings outward to -60deg right, then back to 0deg impact) */}
           <div
             className="w-[28px] h-[120px] origin-top animate-cradle-right flex flex-col items-center"
             style={{ transformOrigin: "top center" }}

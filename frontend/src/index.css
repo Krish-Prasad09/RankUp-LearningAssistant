@@ -125,7 +125,7 @@ body {
 /* Newton's Cradle Loading Animation */
 @keyframes newton-left {
   0% {
-    transform: rotate(-60deg);
+    transform: rotate(60deg);
     animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   }
   25% {
@@ -137,20 +137,21 @@ body {
     animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   100% {
-    transform: rotate(-60deg);
+    transform: rotate(60deg);
   }
 }
 
 @keyframes newton-right {
   0% {
     transform: rotate(0deg);
+    animation-timing-function: linear;
   }
   25% {
     transform: rotate(0deg);
     animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   50% {
-    transform: rotate(60deg);
+    transform: rotate(-60deg);
     animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   }
   75% {
@@ -164,7 +165,7 @@ body {
 
 @keyframes newton-shadow {
   0%, 100% {
-    transform: scaleX(0.85) translateX(6px);
+    transform: scaleX(0.85) translateX(-4px);
     opacity: 0.35;
   }
   25%, 75% {
@@ -172,7 +173,7 @@ body {
     opacity: 0.7;
   }
   50% {
-    transform: scaleX(0.85) translateX(-6px);
+    transform: scaleX(0.85) translateX(4px);
     opacity: 0.35;
   }
 }
