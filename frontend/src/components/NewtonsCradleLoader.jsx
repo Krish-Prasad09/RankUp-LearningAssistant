@@ -3,7 +3,9 @@ import React from "react";
 /**
  * NewtonsCradleLoader
  * A physics-inspired Newton's Cradle loading screen styled for the dark navy / bluish theme.
- * Replicates the swing momentum, hanging spheres, rhythmic motion, and ground reflection.
+ * Uses HTML elements with transform-origin: top center for 100% reliable cross-browser physics.
+ * Left ball swings from -60deg (outward left) to 0deg (impact), transferring momentum
+ * to the right ball which swings from 0deg to +60deg (outward right) and back.
  */
 export default function NewtonsCradleLoader({
   message = "loading...",
@@ -17,197 +19,90 @@ export default function NewtonsCradleLoader({
 
   return (
     <div className={containerClasses}>
-      {/* Ambient background glow to match the dark navy theme */}
+      {/* Ambient background glow matching the dark navy / cyan theme */}
       <div className="absolute w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none -top-12" />
       <div className="absolute w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none -bottom-10" />
 
       <div className="relative flex flex-col items-center z-10">
-        {/* Newton's Cradle SVG */}
-        <svg
-          width="280"
-          height="170"
-          viewBox="0 0 300 180"
-          className="overflow-visible"
-        >
-          <defs>
-            {/* Sphere 3D gradient */}
-            <radialGradient id="cradleSphereGlow" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stopColor="#bae6fd" />
-              <stop offset="25%" stopColor="#38bdf8" />
-              <stop offset="65%" stopColor="#0284c7" />
-              <stop offset="100%" stopColor="#034d75" />
-            </radialGradient>
-
-            {/* Glowing filter for spheres */}
-            <filter id="cradleGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0ea5e9" floodOpacity="0.45" />
-            </filter>
-
-            {/* Dynamic ground shadow gradient */}
-            <radialGradient id="cradleShadowGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(14, 165, 233, 0.35)" />
-              <stop offset="50%" stopColor="rgba(15, 23, 42, 0.4)" />
-              <stop offset="100%" stopColor="transparent" />
-            </radialGradient>
-          </defs>
-
-          {/* Top suspension frame bar */}
-          <line
-            x1="65"
-            y1="20"
-            x2="235"
-            y2="20"
-            stroke="#1e293b"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <line
-            x1="70"
-            y1="19"
-            x2="230"
-            y2="19"
-            stroke="#334155"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-
-          {/* 5 Suspension Anchor Pins */}
-          {[98, 124, 150, 176, 202].map((x) => (
-            <circle key={x} cx={x} cy="20" r="2.5" fill="#38bdf8" />
-          ))}
-
-          {/* Dynamic Ground Shadow */}
-          <ellipse
-            cx="150"
-            cy="158"
-            rx="56"
-            ry="6"
-            fill="url(#cradleShadowGrad)"
-            className="animate-cradle-shadow"
-          />
-
-          {/* Ball 0 (Leftmost - Swinging out and back) */}
-          <g transform="translate(98, 20)">
-            <g className="animate-cradle-left">
-              <line
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="105"
-                stroke="#475569"
-                strokeWidth="1.5"
+        {/* Top Suspension Bar */}
+        <div className="relative w-48 h-1.5 bg-slate-700/90 rounded-full border-t border-slate-500/50 shadow-md flex justify-center items-center">
+          {/* 5 Anchor Pins exactly aligned with each 28px pendulum center */}
+          <div className="w-[140px] flex items-center justify-between px-[13px]">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_5px_#38bdf8]"
               />
-              <circle
-                cx="0"
-                cy="105"
-                r="13"
-                fill="url(#cradleSphereGlow)"
-                stroke="#082f49"
-                strokeWidth="1.5"
-                filter="url(#cradleGlow)"
-              />
-              {/* Highlight shine */}
-              <circle cx="-3" cy="101" r="2.5" fill="#ffffff" opacity="0.6" />
-            </g>
-          </g>
+            ))}
+          </div>
+        </div>
+
+        {/* 5 Pendulums in Flex Layout (Each 28px wide so balls touch with 0 gap) */}
+        <div className="relative flex justify-center items-start w-[140px] h-[126px] overflow-visible">
+          {/* Ball 0 (Leftmost - Swings outward to -60deg, then back to 0deg impact) */}
+          <div
+            className="w-[28px] h-[120px] origin-top animate-cradle-left flex flex-col items-center"
+            style={{ transformOrigin: "top center" }}
+          >
+            <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+              <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
+            </div>
+          </div>
 
           {/* Ball 1 (Middle-Left - Stationary) */}
-          <g transform="translate(124, 20)">
-            <line
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="105"
-              stroke="#475569"
-              strokeWidth="1.5"
-            />
-            <circle
-              cx="0"
-              cy="105"
-              r="13"
-              fill="url(#cradleSphereGlow)"
-              stroke="#082f49"
-              strokeWidth="1.5"
-              filter="url(#cradleGlow)"
-            />
-            <circle cx="-3" cy="101" r="2.5" fill="#ffffff" opacity="0.6" />
-          </g>
+          <div
+            className="w-[28px] h-[120px] origin-top flex flex-col items-center"
+            style={{ transformOrigin: "top center" }}
+          >
+            <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+              <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
+            </div>
+          </div>
 
           {/* Ball 2 (Center - Stationary) */}
-          <g transform="translate(150, 20)">
-            <line
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="105"
-              stroke="#475569"
-              strokeWidth="1.5"
-            />
-            <circle
-              cx="0"
-              cy="105"
-              r="13"
-              fill="url(#cradleSphereGlow)"
-              stroke="#082f49"
-              strokeWidth="1.5"
-              filter="url(#cradleGlow)"
-            />
-            <circle cx="-3" cy="101" r="2.5" fill="#ffffff" opacity="0.6" />
-          </g>
+          <div
+            className="w-[28px] h-[120px] origin-top flex flex-col items-center"
+            style={{ transformOrigin: "top center" }}
+          >
+            <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+              <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
+            </div>
+          </div>
 
           {/* Ball 3 (Middle-Right - Stationary) */}
-          <g transform="translate(176, 20)">
-            <line
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="105"
-              stroke="#475569"
-              strokeWidth="1.5"
-            />
-            <circle
-              cx="0"
-              cy="105"
-              r="13"
-              fill="url(#cradleSphereGlow)"
-              stroke="#082f49"
-              strokeWidth="1.5"
-              filter="url(#cradleGlow)"
-            />
-            <circle cx="-3" cy="101" r="2.5" fill="#ffffff" opacity="0.6" />
-          </g>
+          <div
+            className="w-[28px] h-[120px] origin-top flex flex-col items-center"
+            style={{ transformOrigin: "top center" }}
+          >
+            <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+              <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
+            </div>
+          </div>
 
-          {/* Ball 4 (Rightmost - Swinging out and back) */}
-          <g transform="translate(202, 20)">
-            <g className="animate-cradle-right">
-              <line
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="105"
-                stroke="#475569"
-                strokeWidth="1.5"
-              />
-              <circle
-                cx="0"
-                cy="105"
-                r="13"
-                fill="url(#cradleSphereGlow)"
-                stroke="#082f49"
-                strokeWidth="1.5"
-                filter="url(#cradleGlow)"
-              />
-              <circle cx="-3" cy="101" r="2.5" fill="#ffffff" opacity="0.6" />
-            </g>
-          </g>
-        </svg>
+          {/* Ball 4 (Rightmost - Swings outward to +60deg, then back to 0deg impact) */}
+          <div
+            className="w-[28px] h-[120px] origin-top animate-cradle-right flex flex-col items-center"
+            style={{ transformOrigin: "top center" }}
+          >
+            <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+              <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic Ground Shadow */}
+        <div className="w-36 h-2 rounded-full bg-cyan-500/15 blur-[3px] animate-cradle-shadow mt-1" />
 
         {/* Text & Underline matching the reference */}
         <div className="flex flex-col items-center mt-3">
           <p className="text-[15px] font-medium tracking-[0.2em] text-slate-300 font-sans select-none">
             {message}
           </p>
-          {/* Subtle grounded oval pill as in the reference */}
           <div className="mt-2 w-16 h-1 rounded-full bg-slate-700/60 shadow-[0_0_8px_rgba(14,165,233,0.25)]" />
 
           {subtitle && (
