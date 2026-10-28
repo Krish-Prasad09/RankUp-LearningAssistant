@@ -1,7 +1,7 @@
 import Document from "../models/Document.js";
 import Folder from "../models/Folder.js";
 import Activity from "../models/Activity.js";
-import { callGroq, callGroqWithRetry, parseJsonResponse } from "../utils/groq.js";
+import { callGroq, parseJsonResponse } from "../utils/groq.js";
 import { buildQuizPdf } from "../utils/pdfExport.js";
 
 const ALLOWED_QUIZ_COUNTS = [5, 10, 15, 20];
@@ -78,7 +78,7 @@ Rules:
 - Questions should be clear, unambiguous, and appropriate for the selected difficulty.`;
 
       try {
-        const raw = await callGroqWithRetry(systemPrompt, userPrompt);
+        const raw = await callGroq(systemPrompt, userPrompt);
         const parsed = parseJsonResponse(raw);
         if (Array.isArray(parsed)) {
           return parsed
@@ -434,7 +434,7 @@ Please generate a detailed learning analysis report in Markdown format. The repo
 Keep the tone encouraging, professional, and actionable. Use bullet points and headers.`;
     }
 
-    const report = await callGroqWithRetry(systemPrompt, userPrompt);
+    const report = await callGroq(systemPrompt, userPrompt);
     res.json({ report });
   } catch (error) {
     console.error("Analyze quiz attempt error:", error);

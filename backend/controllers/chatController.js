@@ -1,5 +1,4 @@
 import Document from "../models/Document.js";
-import Activity from "../models/Activity.js";
 import { callGroq } from "../utils/groq.js";
 
 // POST /api/documents/:id/chat

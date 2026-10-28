@@ -46,7 +46,7 @@ export default function UploadModal({ onClose, onUploaded, folderPath = "/" }) {
             <h2 className="text-lg font-bold text-white">Upload Document</h2>
             <p className="text-xs text-slate-400 mt-0.5">(better performance for lesser pages)</p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-250 p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
             <CloseIcon className="w-5 h-5" />
           </button>
         </div>

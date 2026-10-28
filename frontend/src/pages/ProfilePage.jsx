@@ -49,7 +49,7 @@ export default function ProfilePage() {
             <div>
               <p className="text-xl font-bold text-white">{user?.name || "Learner"}</p>
               <p className="text-sm text-slate-500">{user?.email || "rankup@learn.app"}</p>
-              <span className="inline-block mt-2 text-xs font-medium bg-indigo-950/30 text-indigo-450 border border-indigo-900/40 px-2.5 py-1 rounded-full">
+              <span className="inline-block mt-2 text-xs font-medium bg-indigo-950/30 text-indigo-400 border border-indigo-900/40 px-2.5 py-1 rounded-full">
                 RankUp Student
               </span>
             </div>

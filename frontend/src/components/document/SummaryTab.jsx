@@ -48,7 +48,7 @@ export default function SummaryTab({ doc, setDoc }) {
         <p className="text-sm text-red-400 mb-3">{error}</p>
         <button
           onClick={() => load(false)}
-          className="text-sm text-emerald-400 font-medium hover:text-emerald-300 cursor-pointer"
+          className="text-sm text-indigo-400 font-medium hover:text-indigo-300 cursor-pointer"
         >
           Try again
         </button>
@@ -63,7 +63,7 @@ export default function SummaryTab({ doc, setDoc }) {
           <button
             onClick={() => setView("quick")}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-              view === "quick" ? "bg-slate-900 text-emerald-400 shadow-sm" : "text-slate-500 hover:text-slate-350"
+              view === "quick" ? "bg-slate-900 text-indigo-400 shadow-sm" : "text-slate-400 hover:text-slate-200"
             }`}
           >
             Quick Overview
@@ -71,7 +71,7 @@ export default function SummaryTab({ doc, setDoc }) {
           <button
             onClick={() => setView("detailed")}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-              view === "detailed" ? "bg-slate-900 text-emerald-400 shadow-sm" : "text-slate-500 hover:text-slate-350"
+              view === "detailed" ? "bg-slate-900 text-indigo-400 shadow-sm" : "text-slate-400 hover:text-slate-200"
             }`}
           >
             Detailed Summary
@@ -81,7 +81,7 @@ export default function SummaryTab({ doc, setDoc }) {
         <button
           onClick={() => load(true)}
           disabled={regenerating}
-          className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 border border-slate-800 hover:border-emerald-800/80 rounded-xl px-3 py-1.5 transition-colors disabled:opacity-50 cursor-pointer bg-slate-950/20"
+          className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-indigo-400 border border-slate-800 hover:border-indigo-800/80 rounded-xl px-3 py-1.5 transition-colors disabled:opacity-50 cursor-pointer bg-slate-950/20"
         >
           <RefreshIcon className={`w-4 h-4 ${regenerating ? "animate-spin" : ""}`} />
           {regenerating ? "Regenerating..." : "Regenerate"}

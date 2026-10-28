@@ -6,7 +6,6 @@ import {
   getDocument,
   renameDocument,
   deleteDocument,
-  getDashboard,
   listFolders,
   createFolder,
   deleteFolder,

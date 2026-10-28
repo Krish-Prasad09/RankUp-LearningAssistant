@@ -63,7 +63,7 @@ export default function FlashcardsTab({ doc, setDoc }) {
           {flashcards.length > 0 && (
             <a
               href={exportFlashcardsUrl(doc._id)}
-              className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 border border-slate-800 hover:border-emerald-800/85 bg-slate-905 rounded-xl px-3 py-1.5 transition-colors cursor-pointer"
+              className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-indigo-400 border border-slate-800 hover:border-indigo-800/80 bg-slate-900 rounded-xl px-3 py-1.5 transition-colors cursor-pointer"
             >
               <DownloadIcon className="w-4 h-4" />
               Export PDF
@@ -72,7 +72,7 @@ export default function FlashcardsTab({ doc, setDoc }) {
           <button
             onClick={handleGenerate}
             disabled={generating || maxReached}
-            className="flex items-center gap-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white rounded-xl px-4 py-2 transition-colors cursor-pointer"
+            className="flex items-center gap-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white rounded-xl px-4 py-2 transition-colors cursor-pointer"
           >
             <PlusIcon className="w-4 h-4" />
             {generating ? "Generating..." : maxReached ? "Max reached" : "Generate 5 more"}
@@ -88,15 +88,15 @@ export default function FlashcardsTab({ doc, setDoc }) {
 
       {flashcards.length === 0 ? (
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center">
-          <div className="w-12 h-12 rounded-xl bg-emerald-950/40 flex items-center justify-center mx-auto mb-3">
-            <CardIcon className="w-6 h-6 text-emerald-400" />
+          <div className="w-12 h-12 rounded-xl bg-indigo-950/40 flex items-center justify-center mx-auto mb-3">
+            <CardIcon className="w-6 h-6 text-indigo-400" />
           </div>
           <p className="text-sm font-medium text-slate-200 mb-1">No flashcards yet</p>
           <p className="text-xs text-slate-500 mb-4">Generate flashcards from this document's content.</p>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer"
+            className="text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {generating ? "Generating..." : "Generate Flashcards"}
           </button>
@@ -119,17 +119,17 @@ export default function FlashcardsTab({ doc, setDoc }) {
                 className="absolute inset-0 bg-slate-900 border border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
                 style={{ backfaceVisibility: "hidden" }}
               >
-                <span className="text-xs font-semibold text-emerald-400 tracking-wide mb-3">QUESTION</span>
+                <span className="text-xs font-semibold text-indigo-400 tracking-wide mb-3">QUESTION</span>
                 <p className="text-base font-medium text-white">{flashcards[index].question}</p>
                 <span className="text-xs text-slate-500 mt-4">Click to flip</span>
               </div>
               <div
-                className="absolute inset-0 bg-emerald-600 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
+                className="absolute inset-0 bg-indigo-600 rounded-2xl p-8 flex flex-col items-center justify-center text-center"
                 style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
               >
-                <span className="text-xs font-semibold text-emerald-100 tracking-wide mb-3">ANSWER</span>
+                <span className="text-xs font-semibold text-indigo-100 tracking-wide mb-3">ANSWER</span>
                 <p className="text-base font-medium text-white">{flashcards[index].answer}</p>
-                <span className="text-xs text-emerald-100/70 mt-4">Click to flip back</span>
+                <span className="text-xs text-indigo-100/70 mt-4">Click to flip back</span>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function FlashcardsTab({ doc, setDoc }) {
           <div className="flex items-center gap-4 mt-6">
             <button
               onClick={() => goTo(index - 1)}
-              className="w-10 h-10 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-800 transition-colors cursor-pointer"
+              className="w-10 h-10 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center text-slate-400 hover:text-indigo-400 hover:border-indigo-800 transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -146,7 +146,7 @@ export default function FlashcardsTab({ doc, setDoc }) {
             </span>
             <button
               onClick={() => goTo(index + 1)}
-              className="w-10 h-10 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-800 transition-colors cursor-pointer"
+              className="w-10 h-10 rounded-xl border border-slate-800 bg-slate-900 flex items-center justify-center text-slate-400 hover:text-indigo-400 hover:border-indigo-800 transition-colors cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -158,7 +158,7 @@ export default function FlashcardsTab({ doc, setDoc }) {
 }
 
 function Spinner() {
-  return <div className="w-8 h-8 border-3 border-slate-200 border-t-emerald-500 rounded-full animate-spin" />;
+  return <div className="w-8 h-8 border-3 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />;
 }
 
 function PlusIcon(props) {

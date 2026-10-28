@@ -100,8 +100,8 @@ export default function QuizTab({ doc, setDoc }) {
           </div>
         )}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center">
-          <div className="w-12 h-12 rounded-xl bg-emerald-950/40 flex items-center justify-center mx-auto mb-3">
-            <QuizIcon className="w-6 h-6 text-emerald-400" />
+          <div className="w-12 h-12 rounded-xl bg-indigo-950/40 flex items-center justify-center mx-auto mb-3">
+            <QuizIcon className="w-6 h-6 text-indigo-400" />
           </div>
           <p className="text-sm font-medium text-slate-200 mb-1">No quiz yet</p>
           <p className="text-xs text-slate-500 mb-5">Generate a multiple choice quiz from this document.</p>
@@ -117,7 +117,7 @@ export default function QuizTab({ doc, setDoc }) {
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="mt-5 text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer"
+            className="mt-5 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {generating ? "Generating..." : "Generate Quiz"}
           </button>
@@ -136,7 +136,7 @@ export default function QuizTab({ doc, setDoc }) {
           </div>
         )}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-5 text-center">
-          <p className="text-xs font-semibold text-emerald-400 tracking-wide mb-2">QUIZ COMPLETE</p>
+          <p className="text-xs font-semibold text-indigo-400 tracking-wide mb-2">QUIZ COMPLETE</p>
           <p className="text-4xl font-bold text-white mb-1">
             {result.score} / {result.total}
           </p>
@@ -144,20 +144,20 @@ export default function QuizTab({ doc, setDoc }) {
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={handleRetake}
-              className="text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-4 py-2 transition-colors cursor-pointer"
+              className="text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-4 py-2 transition-colors cursor-pointer"
             >
               Retake Quiz
             </button>
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="text-sm font-medium border border-slate-800 hover:border-emerald-800 text-slate-300 hover:text-emerald-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-slate-950/20"
+              className="text-sm font-medium border border-slate-800 hover:border-indigo-800 text-slate-300 hover:text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-slate-950/20"
             >
               {generating ? "Generating..." : "Generate New Quiz"}
             </button>
             <a
               href={exportQuizUrl(doc._id)}
-              className="flex items-center gap-2 text-sm font-medium border border-slate-800 hover:border-emerald-800 text-slate-300 hover:text-emerald-400 rounded-xl px-4 py-2 transition-colors cursor-pointer bg-slate-950/20"
+              className="flex items-center gap-2 text-sm font-medium border border-slate-800 hover:border-indigo-800 text-slate-300 hover:text-indigo-400 rounded-xl px-4 py-2 transition-colors cursor-pointer bg-slate-950/20"
             >
               <DownloadIcon className="w-4 h-4" />
               Export PDF
@@ -178,7 +178,7 @@ export default function QuizTab({ doc, setDoc }) {
 
         <div className="flex flex-col gap-4">
           {result.results.map((r, i) => (
-            <div key={i} className="bg-slate-900 border border-slate-850 rounded-2xl p-5">
+            <div key={i} className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
               <p className="text-sm font-medium text-white mb-3">
                 {i + 1}. {r.question}
               </p>
@@ -186,9 +186,9 @@ export default function QuizTab({ doc, setDoc }) {
                 {r.options.map((opt, oi) => {
                   const isCorrect = oi === r.correctIndex;
                   const isSelected = oi === r.selected;
-                  let cls = "border-slate-800 text-slate-350 bg-slate-950/10";
-                  if (isCorrect) cls = "border-emerald-900 bg-emerald-950/30 text-emerald-405";
-                  else if (isSelected && !isCorrect) cls = "border-red-900 bg-red-950/30 text-red-405";
+                  let cls = "border-slate-800 text-slate-300 bg-slate-950/10";
+                  if (isCorrect) cls = "border-emerald-900 bg-emerald-950/30 text-emerald-400";
+                  else if (isSelected && !isCorrect) cls = "border-red-900 bg-red-950/30 text-red-400";
                   return (
                     <div key={oi} className={`flex items-center justify-between border rounded-xl px-3 py-2 text-sm ${cls}`}>
                       <span>{opt}</span>
@@ -206,7 +206,7 @@ export default function QuizTab({ doc, setDoc }) {
         </div>
 
         {quiz.attempts.length > 0 && (
-          <div className="bg-slate-900 border border-slate-850 rounded-2xl p-5 mt-5">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 mt-5">
             <p className="text-sm font-semibold text-slate-300 mb-3">Attempt History</p>
             <div className="flex flex-col gap-2">
               {quiz.attempts.map((a) => (
@@ -255,13 +255,13 @@ export default function QuizTab({ doc, setDoc }) {
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="text-sm font-medium border border-slate-800 hover:border-emerald-850 text-slate-300 hover:text-emerald-405 rounded-xl px-3 py-1.5 transition-colors disabled:opacity-50 cursor-pointer bg-slate-905"
+            className="text-sm font-medium border border-slate-800 hover:border-indigo-800 text-slate-300 hover:text-indigo-400 rounded-xl px-3 py-1.5 transition-colors disabled:opacity-50 cursor-pointer bg-slate-900"
           >
             {generating ? "Generating..." : "New Quiz"}
           </button>
           <a
             href={exportQuizUrl(doc._id)}
-            className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-405 border border-slate-800 hover:border-emerald-850 rounded-xl px-3 py-1.5 transition-colors cursor-pointer bg-slate-905"
+            className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-indigo-400 border border-slate-800 hover:border-indigo-800 rounded-xl px-3 py-1.5 transition-colors cursor-pointer bg-slate-900"
           >
             <DownloadIcon className="w-4 h-4" />
             Export PDF
@@ -275,7 +275,7 @@ export default function QuizTab({ doc, setDoc }) {
             key={i}
             onClick={() => setCurrent(i)}
             className={`flex-1 h-1.5 rounded-full transition-colors cursor-pointer ${
-              i === current ? "bg-emerald-500" : answers[i] !== -1 ? "bg-emerald-800/60" : "bg-slate-800"
+              i === current ? "bg-indigo-500" : answers[i] !== -1 ? "bg-indigo-800/60" : "bg-slate-800"
             }`}
           />
         ))}
@@ -304,7 +304,7 @@ export default function QuizTab({ doc, setDoc }) {
           <button
             onClick={() => setCurrent((c) => Math.max(0, c - 1))}
             disabled={current === 0}
-            className="text-sm font-medium text-slate-450 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+            className="text-sm font-medium text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           >
             Previous
           </button>
@@ -313,14 +313,14 @@ export default function QuizTab({ doc, setDoc }) {
             <button
               onClick={handleSubmit}
               disabled={!allAnswered || submitting}
-              className="text-sm font-medium bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-850 disabled:text-slate-600 disabled:cursor-not-allowed text-white rounded-xl px-5 py-2.5 transition-colors cursor-pointer"
+              className="text-sm font-medium bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white rounded-xl px-5 py-2.5 transition-colors cursor-pointer"
             >
               {submitting ? "Submitting..." : "Submit Quiz"}
             </button>
           ) : (
             <button
               onClick={() => setCurrent((c) => Math.min(quiz.questions.length - 1, c + 1))}
-              className="text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl px-5 py-2.5 transition-colors cursor-pointer"
+              className="text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-5 py-2.5 transition-colors cursor-pointer"
             >
               Next
             </button>
@@ -336,7 +336,7 @@ export default function QuizTab({ doc, setDoc }) {
 }
 
 function Spinner() {
-  return <div className="w-8 h-8 border-3 border-slate-200 border-t-emerald-500 rounded-full animate-spin" />;
+  return <div className="w-8 h-8 border-3 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />;
 }
 
 function QuizOptions({ difficulty, setDifficulty, sourceMode, setSourceMode, total, setTotal, disabled, compact = false }) {
@@ -357,8 +357,8 @@ function QuizOptions({ difficulty, setDifficulty, sourceMode, setSourceMode, tot
             disabled={disabled}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors cursor-pointer ${
               difficulty === level
-                ? "bg-slate-900 text-emerald-400 shadow-sm"
-                : "text-slate-550 hover:text-slate-350"
+                ? "bg-slate-900 text-indigo-400 shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             {level}
@@ -374,8 +374,8 @@ function QuizOptions({ difficulty, setDifficulty, sourceMode, setSourceMode, tot
             disabled={disabled}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
               total === count
-                ? "bg-slate-900 text-emerald-400 shadow-sm"
-                : "text-slate-550 hover:text-slate-350"
+                ? "bg-slate-900 text-indigo-400 shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             {count}
@@ -389,8 +389,8 @@ function QuizOptions({ difficulty, setDifficulty, sourceMode, setSourceMode, tot
           disabled={disabled}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
             sourceMode === "document"
-              ? "bg-slate-900 text-emerald-400 shadow-sm"
-              : "text-slate-550 hover:text-slate-350"
+              ? "bg-slate-900 text-indigo-400 shadow-sm"
+              : "text-slate-400 hover:text-slate-200"
           }`}
         >
           PDF only
@@ -401,8 +401,8 @@ function QuizOptions({ difficulty, setDifficulty, sourceMode, setSourceMode, tot
           disabled={disabled}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
             sourceMode === "document_internet"
-              ? "bg-slate-900 text-emerald-400 shadow-sm"
-              : "text-slate-550 hover:text-slate-350"
+              ? "bg-slate-900 text-indigo-400 shadow-sm"
+              : "text-slate-400 hover:text-slate-200"
           }`}
         >
           PDF + Internet

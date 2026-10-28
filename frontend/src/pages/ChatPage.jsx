@@ -92,7 +92,7 @@ export default function ChatPage() {
                   className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
                     m.role === "user"
                       ? "bg-indigo-600 text-white rounded-br-sm shadow-indigo-500/5"
-                      : "bg-slate-900 border border-slate-800 text-slate-350 rounded-bl-sm"
+                      : "bg-slate-900 border border-slate-800 text-slate-300 rounded-bl-sm"
                   }`}
                 >
                   {m.content}

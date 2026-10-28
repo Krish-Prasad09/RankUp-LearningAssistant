@@ -77,7 +77,7 @@ export default function FlashcardsPage() {
               <CardIcon className="w-6 h-6" />
             </div>
             <p className="text-sm font-semibold text-slate-200 mb-1">No flashcards yet</p>
-            <p className="text-xs text-slate-450 mb-5">
+            <p className="text-xs text-slate-400 mb-5">
               Open a document and generate flashcards from its Flashcards tab.
             </p>
             <Link to="/documents" className="btn-primary inline-flex text-sm">
@@ -132,7 +132,7 @@ function FlashcardPreview({ card }) {
         style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
       >
         <div
-          className="absolute inset-0 bg-slate-950 border border-slate-850 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
+          className="absolute inset-0 bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
           style={{ backfaceVisibility: "hidden" }}
         >
           <p className="text-sm font-medium text-slate-100">{card.question}</p>

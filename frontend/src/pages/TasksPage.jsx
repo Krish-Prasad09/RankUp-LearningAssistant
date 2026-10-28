@@ -134,13 +134,13 @@ export default function TasksPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Add a todo"
-                className="flex-1 border border-slate-850 bg-slate-950 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-550 outline-none focus:ring-2 focus:ring-indigo-500/30"
+                className="flex-1 border border-slate-800 bg-slate-950 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/30"
               />
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="border border-slate-850 bg-slate-950 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/30"
+                className="border border-slate-800 bg-slate-950 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:ring-2 focus:ring-indigo-500/30"
               />
               <button className="btn-primary text-sm cursor-pointer" disabled={!title.trim()}>
                 Add Task
@@ -152,12 +152,12 @@ export default function TasksPage() {
             ) : (
               <div className="flex flex-col gap-3">
                 {[...pendingTasks, ...completedTasks].length === 0 && (
-                  <div className="text-sm text-slate-500 bg-slate-950/50 border border-dashed border-slate-850 rounded-xl p-6 text-center">
+                  <div className="text-sm text-slate-500 bg-slate-950/50 border border-dashed border-slate-800 rounded-xl p-6 text-center">
                     No tasks yet.
                   </div>
                 )}
                 {[...pendingTasks, ...completedTasks].map((task) => (
-                  <div key={task._id} className="flex items-center gap-3 border border-slate-850 bg-slate-950/20 rounded-xl px-4 py-3">
+                  <div key={task._id} className="flex items-center gap-3 border border-slate-800 bg-slate-950/20 rounded-xl px-4 py-3">
                     <button
                       onClick={() => toggleTask(task)}
                       className={`w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 cursor-pointer ${
@@ -175,7 +175,7 @@ export default function TasksPage() {
                     </div>
                     <button
                       onClick={() => removeTask(task._id)}
-                      className="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-850 cursor-pointer"
+                      className="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-800 cursor-pointer"
                       title="Delete task"
                     >
                       <TrashIcon className="w-4 h-4" />
@@ -199,7 +199,7 @@ export default function TasksPage() {
               </div>
               <button
                 onClick={() => setIsFullScreen(true)}
-                className="text-xs font-semibold text-indigo-400 hover:text-indigo-350 border border-slate-850 hover:border-indigo-850 bg-slate-950 px-3 py-1.5 rounded-xl cursor-pointer transition-colors shadow-sm"
+                className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 border border-slate-800 hover:border-indigo-700 bg-slate-950 px-3 py-1.5 rounded-xl cursor-pointer transition-colors shadow-sm"
               >
                 Full Screen ↗
               </button>
@@ -217,7 +217,7 @@ export default function TasksPage() {
                     key={key}
                     onClick={() => setEventDate(key)}
                     className={`min-h-20 rounded-xl border p-2 text-left transition-colors cursor-pointer ${
-                      day.inMonth ? "bg-slate-900 border-slate-850 text-slate-200 hover:border-indigo-800" : "bg-slate-950 border-slate-900 text-slate-600"
+                      day.inMonth ? "bg-slate-900 border-slate-800 text-slate-200 hover:border-indigo-800" : "bg-slate-950 border-slate-900 text-slate-600"
                     } ${eventDate === key ? "ring-2 ring-indigo-400/40 border-indigo-500/50" : ""}`}
                   >
                     <span className="text-xs font-semibold">{day.date.getDate()}</span>
@@ -234,7 +234,7 @@ export default function TasksPage() {
               })}
             </div>
 
-            <form onSubmit={addEvent} className="border-t border-slate-850 pt-4">
+            <form onSubmit={addEvent} className="border-t border-slate-800 pt-4">
               <p className="text-sm font-semibold text-slate-300 mb-3">Label a Date</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                 <input
@@ -259,7 +259,7 @@ export default function TasksPage() {
                   value={eventLabel}
                   onChange={(e) => setEventLabel(e.target.value)}
                   placeholder="Exam, lab, revision..."
-                  className="flex-1 border border-slate-800 bg-slate-950 text-white placeholder-slate-550 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
+                  className="flex-1 border border-slate-800 bg-slate-950 text-white placeholder-slate-500 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
                 />
                 <button className="btn-primary text-sm cursor-pointer" disabled={!eventLabel.trim()}>Add</button>
               </div>
@@ -267,7 +267,7 @@ export default function TasksPage() {
 
             <div className="mt-5 flex flex-col gap-2">
               {(eventsByDate[eventDate] || []).map((event) => (
-                <div key={event._id} className="flex items-center justify-between gap-2 text-sm border border-slate-850 bg-slate-950/20 rounded-xl px-3 py-2">
+                <div key={event._id} className="flex items-center justify-between gap-2 text-sm border border-slate-800 bg-slate-950/20 rounded-xl px-3 py-2">
                   <span className={`rounded-lg border px-2 py-1 text-xs ${eventColors[event.color] || eventColors.indigo}`}>{event.label}</span>
                   <button onClick={() => removeEvent(event._id)} className="text-slate-500 hover:text-red-400 cursor-pointer" title="Remove label">
                     <TrashIcon className="w-4 h-4" />
@@ -282,7 +282,7 @@ export default function TasksPage() {
       {isFullScreen && (
         <div className="fixed inset-0 bg-slate-950 z-50 flex flex-col p-6 sm:p-8 overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-850">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
             <div>
               <h2 className="text-2xl font-extrabold text-white flex items-center gap-2">
                 📅 Study Calendar
@@ -300,7 +300,7 @@ export default function TasksPage() {
           {/* Layout Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 flex-1 min-h-0">
             {/* Left Column: Big Calendar */}
-            <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 flex flex-col shadow-sm">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <button
@@ -325,7 +325,7 @@ export default function TasksPage() {
 
               <div className="grid grid-cols-7 gap-2 flex-1">
                 {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-                  <div key={day} className="text-center text-xs font-bold text-slate-500 py-2 border-b border-slate-850">
+                  <div key={day} className="text-center text-xs font-bold text-slate-500 py-2 border-b border-slate-800">
                     {day}
                   </div>
                 ))}
@@ -338,7 +338,7 @@ export default function TasksPage() {
                       onClick={() => setEventDate(key)}
                       className={`min-h-[100px] rounded-xl border p-3 text-left transition-all cursor-pointer flex flex-col justify-between ${
                         day.inMonth
-                          ? "bg-slate-950 border-slate-850 text-slate-200 hover:border-indigo-650"
+                          ? "bg-slate-950 border-slate-800 text-slate-200 hover:border-indigo-600"
                           : "bg-slate-950/60 border-slate-900/40 text-slate-650"
                       } ${eventDate === key ? "ring-2 ring-indigo-500/40 border-indigo-500/60 bg-indigo-950/5" : ""}`}
                     >
@@ -367,7 +367,7 @@ export default function TasksPage() {
             {/* Right Column: Event detail & Add Event */}
             <div className="flex flex-col gap-6">
               {/* Event labels for Selected Date */}
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-sm flex-1 overflow-y-auto">
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm flex-1 overflow-y-auto">
                 <h3 className="font-bold text-white text-base mb-1">📅 Selected Date</h3>
                 <p className="text-xs text-slate-500 mb-4">{formatDate(eventDate)}</p>
 
@@ -378,14 +378,14 @@ export default function TasksPage() {
                     (eventsByDate[eventDate] || []).map((event) => (
                       <div
                         key={event._id}
-                        className="flex items-center justify-between gap-2 text-sm border border-slate-850 bg-slate-950/30 rounded-xl px-4 py-3"
+                        className="flex items-center justify-between gap-2 text-sm border border-slate-800 bg-slate-950/30 rounded-xl px-4 py-3"
                       >
                         <span className={`rounded-lg border px-2.5 py-1 text-xs font-semibold ${eventColors[event.color] || eventColors.indigo}`}>
                           {event.label}
                         </span>
                         <button
                           onClick={() => removeEvent(event._id)}
-                          className="text-slate-550 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                          className="text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
                           title="Remove label"
                         >
                           <TrashIcon className="w-4.5 h-4.5" />
@@ -397,7 +397,7 @@ export default function TasksPage() {
               </div>
 
               {/* Add event form */}
-              <div className="bg-slate-900 border border-slate-850 rounded-2xl p-6 shadow-sm">
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
                 <h3 className="font-bold text-white text-base mb-4">Add Study Event</h3>
                 <form onSubmit={addEvent} className="space-y-4">
                   <div>
@@ -414,7 +414,7 @@ export default function TasksPage() {
                     <select
                       value={eventColor}
                       onChange={(e) => setEventColor(e.target.value)}
-                      className="w-full border border-slate-800 bg-slate-950 text-slate-350 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
+                      className="w-full border border-slate-800 bg-slate-950 text-slate-300 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
                     >
                       <option value="indigo">Indigo (Standard)</option>
                       <option value="emerald">Emerald (Revision)</option>
@@ -428,7 +428,7 @@ export default function TasksPage() {
                       value={eventLabel}
                       onChange={(e) => setEventLabel(e.target.value)}
                       placeholder="e.g. Science Exam, Lab Submission"
-                      className="w-full border border-slate-800 bg-slate-950 text-white placeholder-slate-550 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
+                      className="w-full border border-slate-800 bg-slate-950 text-white placeholder-slate-500 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500/30"
                     />
                   </div>
                   <button

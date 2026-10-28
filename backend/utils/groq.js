@@ -105,11 +105,6 @@ export const callGroq = async (systemPrompt, userPrompt, retries = 5, delay = 20
   }
 };
 
-// Call Groq API with retries (compatibility wrapper)
-export const callGroqWithRetry = async (systemPrompt, userPrompt, retries = 5, delay = 2000) => {
-  return callGroq(systemPrompt, userPrompt, retries, delay);
-};
-
 // Extracts text directly from a raw PDF buffer (used at upload time)
 export const extractTextFromBuffer = async (pdfBuffer) => {
   if (!pdfBuffer) return "";

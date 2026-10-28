@@ -60,15 +60,15 @@ export default function LoginPage() {
   }, [googleLogin]);
 
   return (
-    <div className="min-h-screen w-full relative flex flex-col justify-between bg-slate-950 overflow-x-hidden">
-      {/* Blurred Campus Background with Dark Overlay (No radial orbs) */}
+    <div className="min-h-screen w-full relative flex flex-col justify-between bg-neutral-950 overflow-x-hidden">
+      {/* Campus Background with Neutral Dark Overlay */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <img
           src="/campus-bg.png"
           alt="Campus Background"
-          className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.3] contrast-[1.1]"
+          className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.6] contrast-[1.05]"
         />
-        <div className="absolute inset-0 bg-slate-950/85" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
       {/* Header - Clean Typography without Harsh Gradients */}

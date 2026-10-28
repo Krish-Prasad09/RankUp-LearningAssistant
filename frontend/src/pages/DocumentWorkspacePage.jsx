@@ -48,7 +48,7 @@ export default function DocumentWorkspacePage() {
     return (
       <div className="px-8 py-6">
         <p className="text-red-500 text-sm">{error}</p>
-        <button onClick={() => navigate("/documents")} className="mt-3 text-sm text-emerald-600 hover:underline">
+        <button onClick={() => navigate("/documents")} className="mt-3 text-sm text-indigo-400 hover:underline">
           ← Back to Documents
         </button>
       </div>
@@ -67,7 +67,7 @@ export default function DocumentWorkspacePage() {
     <div className="px-8 py-6 text-slate-100">
       <button
         onClick={() => navigate("/documents")}
-        className="flex items-center gap-1.5 text-sm text-slate-450 hover:text-slate-250 mb-3 cursor-pointer"
+        className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 mb-3 cursor-pointer"
       >
         <BackIcon className="w-4 h-4" />
         Back to Documents
@@ -86,7 +86,7 @@ export default function DocumentWorkspacePage() {
               setRenaming(false);
             }
           }}
-          className="text-2xl font-bold text-white bg-slate-950 border border-emerald-800 rounded-lg px-2 py-1 mb-4 outline-none"
+          className="text-2xl font-bold text-white bg-slate-950 border border-indigo-600 rounded-lg px-2 py-1 mb-4 outline-none"
         />
       ) : (
         <h1
@@ -95,7 +95,7 @@ export default function DocumentWorkspacePage() {
           title="Click to rename"
         >
           {doc.name}
-          <EditIcon className="w-4 h-4 text-slate-500 group-hover:text-slate-350" />
+          <EditIcon className="w-4 h-4 text-slate-500 group-hover:text-slate-300" />
         </h1>
       )}
 
@@ -106,8 +106,8 @@ export default function DocumentWorkspacePage() {
             onClick={() => setActiveTab(tab)}
             className={`pb-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
               activeTab === tab
-                ? "border-emerald-500 text-emerald-400"
-                : "border-transparent text-slate-450 hover:text-slate-200"
+                ? "border-indigo-500 text-indigo-400"
+                : "border-transparent text-slate-400 hover:text-slate-200"
             }`}
           >
             {tab}

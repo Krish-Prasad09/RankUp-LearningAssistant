@@ -358,7 +358,7 @@ export default function QuizzesPage() {
 
       <div className="px-8 pb-10">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-sm">
-          <p className="text-sm font-semibold text-slate-350 mb-4">Select documents from any folder to generate a quiz</p>
+          <p className="text-sm font-semibold text-slate-300 mb-4">Select documents from any folder to generate a quiz</p>
           <div className="space-y-3">
             {groupedFolderSections.map((group) => (
               <FolderAccordion
@@ -465,12 +465,12 @@ export default function QuizzesPage() {
             {/* 1. Results View */}
             {singlePlayerResult && (
               <div>
-                <div className="bg-slate-950 border border-slate-850 rounded-xl p-6 mb-5 text-center">
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 mb-5 text-center">
                   <p className="text-xs font-semibold text-indigo-400 tracking-wide mb-2">QUIZ COMPLETE (SINGLE PLAYER)</p>
                   <p className="text-4xl font-bold text-white mb-1">
                     {singlePlayerResult.score} / {singlePlayerResult.total}
                   </p>
-                  <p className="text-xs text-slate-550 mb-4">
+                  <p className="text-xs text-slate-500 mb-4">
                     {Math.round((singlePlayerResult.score / singlePlayerResult.total) * 100)}% Correct
                   </p>
                   <div className="flex items-center justify-center gap-3">
@@ -483,21 +483,21 @@ export default function QuizzesPage() {
                     <button
                       onClick={handleGenerateSinglePlayerReport}
                       disabled={reportLoading}
-                      className="text-sm font-medium border border-indigo-900 hover:border-indigo-850 text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-indigo-950/20"
+                      className="text-sm font-medium border border-indigo-900 hover:border-indigo-700 text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-indigo-950/20"
                     >
                       {reportLoading ? "Analyzing..." : "AI Report"}
                     </button>
                     <button
                       onClick={handleGenerate}
                       disabled={loading}
-                      className="text-sm font-medium border border-slate-800 hover:border-indigo-850 text-slate-350 hover:text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-slate-900"
+                      className="text-sm font-medium border border-slate-800 hover:border-indigo-700 text-slate-300 hover:text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-slate-900"
                     >
                       {loading ? "Generating..." : "Generate New"}
                     </button>
                     <button
                       onClick={handleCreateRoom}
                       disabled={roomLoading}
-                      className="text-sm font-medium border border-indigo-900 hover:border-indigo-850 text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-indigo-950/20"
+                      className="text-sm font-medium border border-indigo-900 hover:border-indigo-700 text-indigo-400 rounded-xl px-4 py-2 transition-colors disabled:opacity-50 cursor-pointer bg-indigo-950/20"
                     >
                       {roomLoading ? "Creating..." : "Create Multiplayer Room"}
                     </button>
@@ -505,8 +505,8 @@ export default function QuizzesPage() {
                 </div>
 
                 {aiReport && (
-                  <div className="bg-slate-950 border border-slate-850 rounded-xl p-6 mb-5">
-                    <div className="flex items-center justify-between border-b border-slate-850 pb-4 mb-4">
+                  <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 mb-5">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
                       <div className="flex items-center gap-2">
                         <span className="text-xl">📊</span>
                         <h3 className="font-bold text-white text-base">AI Performance Analysis</h3>
@@ -521,7 +521,7 @@ export default function QuizzesPage() {
 
                 <div className="flex flex-col gap-4">
                   {singlePlayerResult.results.map((r, i) => (
-                    <div key={i} className="bg-slate-955 border border-slate-850 rounded-xl p-5">
+                    <div key={i} className="bg-slate-950 border border-slate-800 rounded-xl p-5">
                       <p className="text-sm font-medium text-white mb-3">
                         {i + 1}. {r.question}
                       </p>
@@ -529,7 +529,7 @@ export default function QuizzesPage() {
                         {r.options.map((opt, oi) => {
                           const isCorrect = oi === r.correctIndex;
                           const isSelected = oi === r.selected;
-                          let cls = "border-slate-800 text-slate-350 bg-slate-900/10";
+                          let cls = "border-slate-800 text-slate-300 bg-slate-900/10";
                           if (isCorrect) cls = "border-emerald-900 bg-emerald-950/30 text-emerald-400";
                           else if (isSelected && !isCorrect) cls = "border-red-900 bg-red-950/30 text-red-400";
                           return (
@@ -570,13 +570,13 @@ export default function QuizzesPage() {
                           ? "bg-indigo-500"
                           : singlePlayerAnswers[i] !== -1
                           ? "bg-indigo-800/60"
-                          : "bg-slate-850"
+                          : "bg-slate-800"
                       }`}
                     />
                   ))}
                 </div>
 
-                <div className="bg-slate-950 border border-slate-850 rounded-xl p-6">
+                <div className="bg-slate-950 border border-slate-800 rounded-xl p-6">
                   <p className="text-base font-medium text-white mb-5">
                     {quiz.questions[singlePlayerCurrent].question}
                   </p>
@@ -589,7 +589,7 @@ export default function QuizzesPage() {
                         className={`text-left border rounded-xl px-4 py-3 text-sm transition-colors ${
                           singlePlayerAnswers[singlePlayerCurrent] === oi
                             ? "border-indigo-700 bg-indigo-950/40 text-indigo-300 font-medium"
-                            : "border-slate-800 text-slate-300 hover:border-indigo-850 hover:bg-slate-900 bg-slate-900/20 cursor-pointer"
+                            : "border-slate-800 text-slate-300 hover:border-indigo-700 hover:bg-slate-900 bg-slate-900/20 cursor-pointer"
                         }`}
                       >
                         {opt}
@@ -649,7 +649,7 @@ export default function QuizzesPage() {
                     <select
                       value={roomDuration}
                       onChange={(e) => setRoomDuration(Number(e.target.value))}
-                      className="border-none text-xs bg-slate-950 text-slate-350 focus:ring-1 focus:ring-indigo-500/30 outline-none rounded-lg px-2 py-1"
+                      className="border-none text-xs bg-slate-950 text-slate-300 focus:ring-1 focus:ring-indigo-500/30 outline-none rounded-lg px-2 py-1"
                     >
                       <option value={60}>1 Minute</option>
                       <option value={120}>2 Minutes</option>
@@ -847,7 +847,7 @@ function RoomPanel({
             {room.players.map((player) => (
               <div key={player.userId} className="flex items-center justify-between text-sm">
                 <span className="text-slate-300 truncate">{player.name}</span>
-                <span className={player.submitted ? "text-emerald-400" : "text-slate-550"}>{player.submitted ? "Done" : "Joined"}</span>
+                <span className={player.submitted ? "text-emerald-400" : "text-slate-500"}>{player.submitted ? "Done" : "Joined"}</span>
               </div>
             ))}
           </div>
@@ -867,7 +867,7 @@ function RoomPanel({
               <button
                 onClick={onGenerateReport}
                 disabled={reportLoading}
-                className="w-full text-xs font-semibold bg-indigo-950/20 text-indigo-400 border border-indigo-900 hover:border-indigo-850 rounded-xl px-4 py-2.5 transition-colors disabled:opacity-50 cursor-pointer text-center"
+                className="w-full text-xs font-semibold bg-indigo-950/20 text-indigo-400 border border-indigo-900 hover:border-indigo-700 rounded-xl px-4 py-2.5 transition-colors disabled:opacity-50 cursor-pointer text-center"
               >
                 {reportLoading ? "Analyzing..." : "Generate AI Performance Report"}
               </button>
