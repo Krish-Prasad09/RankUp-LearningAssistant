@@ -11,16 +11,13 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ChatPage from "./pages/ChatPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import NewtonsCradleLoader from "./components/NewtonsCradleLoader";
 
 function ProtectedApp() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-      </div>
-    );
+    return <NewtonsCradleLoader message="loading..." />;
   }
 
   return (
