@@ -58,6 +58,19 @@ export default function QuizzesPage() {
     });
   };
 
+  const toggleFolderDocs = (docIds) => {
+    setSelectedDocIds((prev) => {
+      const next = new Set(prev);
+      const allSelected = docIds.length > 0 && docIds.every((id) => next.has(id));
+      if (allSelected) {
+        docIds.forEach((id) => next.delete(id));
+      } else {
+        docIds.forEach((id) => next.add(id));
+      }
+      return next;
+    });
+  };
+
   const syncRoomAnswers = (nextRoom) => {
     setRoomAnswers((prev) => {
       if (nextRoom.myAnswers?.length === nextRoom.questions.length) return nextRoom.myAnswers;
@@ -309,6 +322,7 @@ export default function QuizzesPage() {
                 documents={allDocs.filter((d) => !d.folderPath || d.folderPath === "/")}
                 selectedDocIds={selectedDocIds}
                 toggleDoc={toggleDoc}
+                toggleFolderDocs={toggleFolderDocs}
               />
             )}
 
@@ -323,6 +337,7 @@ export default function QuizzesPage() {
                   documents={folderDocs}
                   selectedDocIds={selectedDocIds}
                   toggleDoc={toggleDoc}
+                  toggleFolderDocs={toggleFolderDocs}
                 />
               );
             })}
@@ -338,7 +353,7 @@ export default function QuizzesPage() {
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value)}
-              className="border border-slate-800 px-4 py-2.5 rounded-xl text-sm bg-slate-950 text-slate-200 focus:ring-2 focus:ring-indigo-500/30 outline-none"
+              className="border border-slate-800 px-3.5 py-2 rounded-lg text-sm bg-slate-950 text-slate-200 focus:ring-1 focus:ring-indigo-500 outline-none"
             >
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
@@ -347,7 +362,7 @@ export default function QuizzesPage() {
             <select
               value={sourceMode}
               onChange={(e) => setSourceMode(e.target.value)}
-              className="border border-slate-800 px-4 py-2.5 rounded-xl text-sm bg-slate-950 text-slate-200 focus:ring-2 focus:ring-indigo-500/30 outline-none"
+              className="border border-slate-800 px-3.5 py-2 rounded-lg text-sm bg-slate-950 text-slate-200 focus:ring-1 focus:ring-indigo-500 outline-none"
             >
               <option value="document">PDF only</option>
               <option value="document_internet">PDF + Internet</option>
@@ -355,7 +370,7 @@ export default function QuizzesPage() {
             <select
               value={total}
               onChange={(e) => setTotal(Number(e.target.value))}
-              className="border border-slate-800 px-4 py-2.5 rounded-xl text-sm bg-slate-950 text-slate-200 focus:ring-2 focus:ring-indigo-500/30 outline-none"
+              className="border border-slate-800 px-3.5 py-2 rounded-lg text-sm bg-slate-950 text-slate-200 focus:ring-1 focus:ring-indigo-500 outline-none"
             >
               <option value={5}>5 questions</option>
               <option value={10}>10 questions</option>
@@ -365,6 +380,11 @@ export default function QuizzesPage() {
             <button onClick={handleGenerate} disabled={loading} className="btn-primary text-sm">
               {loading ? "Generating..." : "Generate Quiz"}
             </button>
+            {selectedDocIds.size > 0 && (
+              <span className="text-xs text-indigo-400 font-medium ml-1">
+                {selectedDocIds.size} {selectedDocIds.size === 1 ? "document" : "documents"} selected
+              </span>
+            )}
           </div>
 
           {error && (
@@ -916,19 +936,41 @@ function XIcon(props) {
   );
 }
 
-function FolderAccordion({ title, documents, selectedDocIds, toggleDoc }) {
+function FolderAccordion({ title, documents, selectedDocIds, toggleDoc, toggleFolderDocs }) {
   const [expanded, setExpanded] = useState(true);
+  const docIds = documents.map((d) => d._id);
+  const allSelected = documents.length > 0 && docIds.every((id) => selectedDocIds.has(id));
 
   return (
     <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
-      <button
-        type="button"
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-slate-900/60 hover:bg-slate-900 transition-colors text-left"
-      >
-        <span className="text-sm font-semibold text-slate-350">📁 {title}</span>
-        <span className="text-xs text-slate-500">{expanded ? "Collapse" : "Expand"}</span>
-      </button>
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-slate-900/60 border-b border-slate-800/60">
+        <button
+          type="button"
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-2 text-left cursor-pointer select-none"
+        >
+          <FolderIcon className="w-4 h-4 text-indigo-400" />
+          <span className="text-sm font-semibold text-slate-200">{title}</span>
+          <span className="text-xs text-slate-500">({documents.length} {documents.length === 1 ? "file" : "files"})</span>
+        </button>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => toggleFolderDocs(docIds)}
+            className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer px-2.5 py-1 rounded bg-indigo-500/10 border border-indigo-500/20"
+          >
+            {allSelected ? "Deselect folder" : "Select all in folder"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+          >
+            {expanded ? "Collapse" : "Expand"}
+          </button>
+        </div>
+      </div>
 
       {expanded && (
         <div className="p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 bg-slate-950">
@@ -937,24 +979,41 @@ function FolderAccordion({ title, documents, selectedDocIds, toggleDoc }) {
             return (
               <label
                 key={doc._id}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all cursor-pointer select-none ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all cursor-pointer select-none ${
                   isChecked
-                    ? "bg-indigo-950/30 border-indigo-850 text-indigo-300"
-                    : "border-slate-850 hover:border-slate-800 text-slate-400 bg-slate-905"
+                    ? "bg-indigo-950/30 border-indigo-500/50 text-indigo-300"
+                    : "border-slate-800 hover:border-slate-700 text-slate-400 bg-slate-900/50"
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={isChecked}
                   onChange={() => toggleDoc(doc._id)}
-                  className="rounded border-slate-700 bg-slate-900 text-indigo-650 focus:ring-indigo-500 focus:ring-offset-slate-950 cursor-pointer"
+                  className="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-950 cursor-pointer"
                 />
-                <span className="truncate" title={doc.name}>📄 {doc.name}</span>
+                <DocIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="truncate text-xs" title={doc.name}>{doc.name}</span>
               </label>
             );
           })}
         </div>
       )}
     </div>
+  );
+}
+
+function FolderIcon(props) {
+  return (
+    <svg {...props} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z" />
+    </svg>
+  );
+}
+
+function DocIcon(props) {
+  return (
+    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+    </svg>
   );
 }
