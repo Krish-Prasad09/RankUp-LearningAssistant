@@ -54,9 +54,9 @@ export const listDocuments = async (page = 1, limit = 10, folderPath = "/", all 
   return apiFetch(`${BASE_URL}/documents?page=${page}&limit=${limit}&folderPath=${fp}`);
 };
 
-export const listFolders = async (path = "/") => {
+export const listFolders = async (path = "/", all = false) => {
   const p = encodeURIComponent(path || "/");
-  return apiFetch(`${BASE_URL}/documents/folders?path=${p}`);
+  return apiFetch(`${BASE_URL}/documents/folders?path=${p}&all=${all}`);
 };
 
 export const createFolder = async (path) => {

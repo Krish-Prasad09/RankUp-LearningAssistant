@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import {
@@ -81,7 +81,7 @@ export default function QuizzesPage() {
 
   useEffect(() => {
     let mounted = true;
-    Promise.all([listFolders("/"), listDocuments(1, 100, "/", true)])
+    Promise.all([listFolders("/", true), listDocuments(1, 100, "/", true)])
       .then(([fData, dData]) => {
         if (mounted) {
           setFolders(fData.folders || []);
@@ -98,6 +98,51 @@ export default function QuizzesPage() {
       mounted = false;
     };
   }, []);
+
+  const groupedFolderSections = useMemo(() => {
+    const groups = new Map();
+
+    // 1. Root documents
+    const rootDocs = allDocs.filter((d) => !d.folderPath || d.folderPath === "/");
+    if (rootDocs.length > 0) {
+      groups.set("/", {
+        path: "/",
+        title: "General Documents (Root)",
+        documents: rootDocs,
+      });
+    }
+
+    // 2. All folders from database
+    folders.forEach((f) => {
+      if (f.path !== "/" && !groups.has(f.path)) {
+        const docsInFolder = allDocs.filter((d) => d.folderPath === f.path);
+        if (docsInFolder.length > 0) {
+          const displayTitle = f.path.replace(/^\//, "").split("/").join(" / ");
+          groups.set(f.path, {
+            path: f.path,
+            title: displayTitle,
+            documents: docsInFolder,
+          });
+        }
+      }
+    });
+
+    // 3. Any nested subfolder present on documents that wasn't already registered
+    allDocs.forEach((d) => {
+      const p = d.folderPath || "/";
+      if (p !== "/" && !groups.has(p)) {
+        const docsInFolder = allDocs.filter((doc) => (doc.folderPath || "/") === p);
+        const displayTitle = p.replace(/^\//, "").split("/").join(" / ");
+        groups.set(p, {
+          path: p,
+          title: displayTitle,
+          documents: docsInFolder,
+        });
+      }
+    });
+
+    return Array.from(groups.values());
+  }, [allDocs, folders]);
 
   useEffect(() => {
     if (!room?.code) return undefined;
@@ -315,32 +360,16 @@ export default function QuizzesPage() {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 shadow-sm">
           <p className="text-sm font-semibold text-slate-350 mb-4">Select documents from any folder to generate a quiz</p>
           <div className="space-y-3">
-            {/* Render Root documents if any */}
-            {allDocs.some((d) => !d.folderPath || d.folderPath === "/") && (
+            {groupedFolderSections.map((group) => (
               <FolderAccordion
-                title="General Documents"
-                documents={allDocs.filter((d) => !d.folderPath || d.folderPath === "/")}
+                key={group.path}
+                title={group.title}
+                documents={group.documents}
                 selectedDocIds={selectedDocIds}
                 toggleDoc={toggleDoc}
                 toggleFolderDocs={toggleFolderDocs}
               />
-            )}
-
-            {/* Render subfolders */}
-            {folders.map((folder) => {
-              const folderDocs = allDocs.filter((d) => d.folderPath === folder.path);
-              if (folderDocs.length === 0) return null; // hide empty folders for quiz
-              return (
-                <FolderAccordion
-                  key={folder.path}
-                  title={folder.name}
-                  documents={folderDocs}
-                  selectedDocIds={selectedDocIds}
-                  toggleDoc={toggleDoc}
-                  toggleFolderDocs={toggleFolderDocs}
-                />
-              );
-            })}
+            ))}
 
             {allDocs.length === 0 && (
               <div className="text-sm text-slate-500 py-2">

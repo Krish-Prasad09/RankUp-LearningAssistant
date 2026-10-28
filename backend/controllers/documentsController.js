@@ -154,7 +154,12 @@ export const deleteDocument = async (req, res) => {
 export const listFolders = async (req, res) => {
   try {
     const path = req.query.path || "/";
-    const folders = await Folder.find({ userId: req.user.id, parent: path }).sort({ name: 1 });
+    const all = req.query.all === "true";
+    const filter = { userId: req.user.id };
+    if (!all) {
+      filter.parent = path;
+    }
+    const folders = await Folder.find(filter).sort({ path: 1, name: 1 });
     res.json({ folders });
   } catch (error) {
     console.error("List folders error:", error);
