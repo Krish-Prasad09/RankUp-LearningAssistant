@@ -63,17 +63,17 @@ export default function ProfilePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
-          <StatCard label="Documents" value={loading ? "—" : stats?.totalDocuments ?? 0} gradient="from-blue-500 to-cyan-500" icon={<DocIcon className="w-5 h-5" />} />
-          <StatCard label="Flashcards" value={loading ? "—" : stats?.totalFlashcards ?? 0} gradient="from-pink-500 to-rose-500" icon={<CardIcon className="w-5 h-5" />} />
-          <StatCard label="Quiz Attempts" value={loading ? "—" : stats?.totalQuizzes ?? 0} gradient="from-emerald-500 to-teal-500" icon={<QuizIcon className="w-5 h-5" />} />
-          <StatCard label="Learning Streak" value={loading ? "—" : `${stats?.learningStreak ?? 0} day${(stats?.learningStreak ?? 0) === 1 ? "" : "s"}`} gradient="from-amber-500 to-orange-500" icon={<StreakIcon className="w-5 h-5" />} />
+          <StatCard label="Documents" value={loading ? "—" : stats?.totalDocuments ?? 0} icon={<DocIcon className="w-5 h-5" />} />
+          <StatCard label="Flashcards" value={loading ? "—" : stats?.totalFlashcards ?? 0} icon={<CardIcon className="w-5 h-5" />} />
+          <StatCard label="Quiz Attempts" value={loading ? "—" : stats?.totalQuizzes ?? 0} icon={<QuizIcon className="w-5 h-5" />} />
+          <StatCard label="Learning Streak" value={loading ? "—" : `${stats?.learningStreak ?? 0} day${(stats?.learningStreak ?? 0) === 1 ? "" : "s"}`} icon={<StreakIcon className="w-5 h-5" />} />
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
-          <h2 className="font-semibold text-white mb-3">About RankUp</h2>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm">
+          <h2 className="font-semibold text-white mb-2.5">About RankUp</h2>
           <p className="text-sm text-slate-400 leading-relaxed">
-            RankUp is your smart learning assistant. Upload any PDF and instantly get an interactive chat,
-            AI-generated summaries, flashcards, and quizzes — all grounded strictly in your document's content.
+            RankUp is your centralized hub for academic excellence. Upload study materials, generate flashcards,
+            review summaries, and challenge peers in live multiplayer quiz battles.
           </p>
         </div>
       </div>
@@ -81,15 +81,15 @@ export default function ProfilePage() {
   );
 }
 
-function StatCard({ label, value, gradient, icon }) {
+function StatCard({ label, value, icon }) {
   return (
-    <div className="stat-card bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+    <div className="stat-card bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold text-slate-500 tracking-wide mb-2">{label.toUpperCase()}</p>
-          <p className="text-3xl font-bold text-white">{value}</p>
+          <p className="text-xs font-semibold text-slate-400 tracking-wider mb-1.5">{label.toUpperCase()}</p>
+          <p className="text-2xl font-bold text-white tracking-tight">{value}</p>
         </div>
-        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg`}>
+        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
           {icon}
         </div>
       </div>

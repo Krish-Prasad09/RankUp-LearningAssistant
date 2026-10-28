@@ -89,21 +89,18 @@ export default function DashboardPage() {
           <StatCard
             label="Documents"
             value={stats?.totalDocuments ?? "—"}
-            gradient="from-blue-500 to-cyan-500"
             icon={<DocIcon className="w-5 h-5" />}
             loading={loading}
           />
           <StatCard
             label="Flashcards"
             value={stats?.totalFlashcards ?? "—"}
-            gradient="from-pink-500 to-rose-500"
             icon={<CardIcon className="w-5 h-5" />}
             loading={loading}
           />
           <StatCard
             label="Quiz Attempts"
             value={stats?.totalQuizzes ?? "—"}
-            gradient="from-emerald-500 to-teal-500"
             icon={<QuizIcon className="w-5 h-5" />}
             loading={loading}
           />
@@ -176,19 +173,19 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ label, value, gradient, icon, loading }) {
+function StatCard({ label, value, icon, loading }) {
   return (
-    <div className="stat-card bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+    <div className="stat-card bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold text-slate-450 tracking-wide mb-2">{label.toUpperCase()}</p>
+          <p className="text-xs font-semibold text-slate-400 tracking-wider mb-1.5">{label.toUpperCase()}</p>
           {loading ? (
-            <div className="h-9 w-16 bg-slate-800/60 rounded-lg animate-pulse" />
+            <div className="h-8 w-16 bg-slate-800/60 rounded-lg animate-pulse" />
           ) : (
-            <p className="text-3xl font-bold text-white">{value}</p>
+            <p className="text-2xl font-bold text-white tracking-tight">{value}</p>
           )}
         </div>
-        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg`}>
+        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
           {icon}
         </div>
       </div>

@@ -138,10 +138,11 @@ function FlashcardPreview({ card }) {
           <p className="text-sm font-medium text-slate-100">{card.question}</p>
         </div>
         <div
-          className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 flex items-center justify-center text-center overflow-y-auto"
+          className="absolute inset-0 bg-slate-900 border-2 border-indigo-500/60 rounded-xl p-4 flex flex-col items-center justify-center text-center overflow-y-auto shadow-sm"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <p className="text-sm font-medium text-white">{card.answer}</p>
+          <span className="text-[10px] uppercase tracking-wider font-semibold text-indigo-400 mb-1">Answer</span>
+          <p className="text-sm font-medium text-slate-100">{card.answer}</p>
         </div>
       </div>
     </div>

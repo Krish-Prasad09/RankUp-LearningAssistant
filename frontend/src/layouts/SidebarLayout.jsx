@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 const navItems = [
   { to: "/", label: "Dashboard", icon: DashboardIcon },
   { to: "/documents", label: "Documents", icon: DocumentsIcon },
-  { to: "/chat", label: "AI Chat", icon: ChatIcon },
+  { to: "/chat", label: "Study Chat", icon: ChatIcon },
   { to: "/flashcards", label: "Flashcards", icon: FlashcardsIcon },
   { to: "/quizzes", label: "Quizzes", icon: QuizIcon },
   { to: "/tasks", label: "Tasks", icon: TasksIcon },
@@ -18,7 +18,7 @@ export default function SidebarLayout() {
 
   return (
     <div className="min-h-screen flex bg-slate-950 text-slate-100">
-      <aside className="w-64 flex-shrink-0 bg-slate-900 flex flex-col">
+      <aside className="w-64 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col">
         <div className="px-6 py-5 border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-sm">
@@ -40,10 +40,10 @@ export default function SidebarLayout() {
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                    ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/20"
+                    : "text-slate-400 hover:bg-slate-800/80 hover:text-slate-200"
                 }`
               }
             >

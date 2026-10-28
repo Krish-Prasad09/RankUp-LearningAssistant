@@ -4,17 +4,6 @@ import TopBar from "../components/TopBar";
 import UploadModal from "../components/UploadModal";
 import { listDocuments, listFolders, createFolder, deleteDocument, deleteFolder } from "../services/api";
 
-const FOLDER_GRADIENTS = [
-  "from-indigo-500 to-purple-600",
-  "from-blue-500 to-cyan-500",
-  "from-emerald-500 to-teal-600",
-  "from-orange-500 to-amber-500",
-  "from-pink-500 to-rose-500",
-  "from-violet-500 to-indigo-600",
-  "from-cyan-500 to-blue-600",
-  "from-rose-500 to-pink-600",
-];
-
 export default function DocumentsPage() {
   const [view, setView] = useState("root");
   const [documents, setDocuments] = useState([]);
@@ -137,7 +126,6 @@ export default function DocumentsPage() {
     setView(newPath === "/" ? "root" : "folder");
   };
 
-  const getFolderGradient = (index) => FOLDER_GRADIENTS[index % FOLDER_GRADIENTS.length];
   const breadcrumb = currentPath.split("/").filter(Boolean);
   const isRoot = view === "root";
 
@@ -152,7 +140,7 @@ export default function DocumentsPage() {
         {!isRoot && (
           <button
             onClick={handleGoBack}
-            className="flex items-center gap-1.5 text-sm text-slate-450 hover:text-indigo-400 mb-5 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-indigo-400 mb-5 transition-colors cursor-pointer"
           >
             <BackIcon className="w-4 h-4" />
             Back to {breadcrumb.length > 1 ? breadcrumb[breadcrumb.length - 2] : "All Folders"}
@@ -160,8 +148,8 @@ export default function DocumentsPage() {
         )}
 
         {/* Create Folder */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 shadow-sm">
-          <label className="text-slate-200 font-semibold mb-3 block">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-8 shadow-sm">
+          <label className="text-slate-200 text-sm font-medium mb-2.5 block">
             {isRoot ? "Create New Subject / Folder" : "Create Subfolder"}
           </label>
           <div className="flex gap-3">
@@ -171,7 +159,7 @@ export default function DocumentsPage() {
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
-              className="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+              className="flex-1 px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             />
             <button
               onClick={handleCreateFolder}
@@ -186,15 +174,19 @@ export default function DocumentsPage() {
         {/* Folders Grid */}
         {folders.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-white mb-4">
-              {isRoot ? "Your Folders" : "Subfolders"}
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-semibold text-white tracking-tight">
+                {isRoot ? "Your Folders" : "Subfolders"}
+              </h2>
+              <span className="text-xs text-slate-400 font-medium">
+                {folders.length} {folders.length === 1 ? "folder" : "folders"}
+              </span>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {folders.map((folder, idx) => (
+              {folders.map((folder) => (
                 <FolderCard
                   key={folder.path}
                   folder={folder}
-                  gradient={getFolderGradient(idx)}
                   isRoot={isRoot}
                   deleting={deletingPath === folder.path}
                   onOpen={() => handleEnterFolder(folder.path)}
@@ -250,7 +242,7 @@ export default function DocumentsPage() {
         {(folders.length > 0 || documents.length > 0) && (
           <button
             onClick={() => setShowUpload(true)}
-            className="fixed bottom-8 right-8 btn-primary flex items-center gap-2 shadow-xl shadow-indigo-500/30 z-20"
+            className="fixed bottom-8 right-8 btn-primary flex items-center gap-2 shadow-lg shadow-black/40 z-20"
           >
             <UploadIcon className="w-5 h-5" />
             Upload PDF
@@ -277,56 +269,39 @@ export default function DocumentsPage() {
   );
 }
 
-function FolderCard({ folder, gradient, isRoot, deleting, onOpen, onDelete }) {
-  if (isRoot) {
-    return (
-      <div className={`folder-card relative h-36 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg overflow-hidden group`}>
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={onOpen}
-          onKeyDown={(e) => e.key === "Enter" && onOpen()}
-          className="w-full h-full flex flex-col items-center justify-center gap-2 cursor-pointer"
-        >
-          <FolderIcon className="w-10 h-10 text-white/80" />
-          <div className="text-white font-bold text-center px-4 truncate w-full">{folder.name}</div>
-        </div>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          disabled={deleting}
-          className="absolute top-2.5 right-2.5 z-10 bg-red-500/90 hover:bg-red-600 text-white rounded-lg w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md disabled:opacity-50"
-          title="Delete folder"
-        >
-          {deleting ? <Spinner className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}
-        </button>
-      </div>
-    );
-  }
-
+function FolderCard({ folder, deleting, onOpen, onDelete }) {
   return (
-    <div className="folder-card relative bg-slate-900 border border-slate-850 rounded-2xl p-5 shadow-sm hover:border-indigo-500/50 hover:shadow-md hover:shadow-indigo-500/5 group">
+    <div className="folder-card relative bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-4 transition-all duration-150 shadow-sm group">
       <div
         role="button"
         tabIndex={0}
         onClick={onOpen}
         onKeyDown={(e) => e.key === "Enter" && onOpen()}
-        className="cursor-pointer"
+        className="w-full flex flex-col justify-between h-28 cursor-pointer select-none"
       >
-        <div className="w-12 h-12 rounded-xl bg-indigo-950/40 flex items-center justify-center mb-3">
-          <FolderIcon className="w-6 h-6 text-indigo-400" />
+        <div className="flex items-start justify-between gap-3">
+          <div className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+            <FolderIcon className="w-5 h-5" />
+          </div>
+          <span className="text-[11px] font-medium text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60">
+            Folder
+          </span>
         </div>
-        <div className="font-semibold text-slate-200 truncate">{folder.name}</div>
-        <div className="text-xs text-slate-500 mt-1">Click to open</div>
+        
+        <div>
+          <div className="font-semibold text-slate-100 text-sm truncate tracking-tight">{folder.name}</div>
+          <p className="text-xs text-slate-500 mt-0.5">Click to view contents</p>
+        </div>
       </div>
+      
       <button
         type="button"
         onClick={(e) => { e.stopPropagation(); onDelete(); }}
         disabled={deleting}
-        className="absolute top-3 right-3 z-10 bg-red-950/30 hover:bg-red-900/40 text-red-450 rounded-lg w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all disabled:opacity-50 cursor-pointer"
+        className="absolute top-3 right-3 z-10 bg-slate-800 hover:bg-red-950/60 text-slate-400 hover:text-red-400 rounded-lg w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all border border-slate-700 hover:border-red-900/40 disabled:opacity-50 cursor-pointer shadow-sm"
         title="Delete folder"
       >
-        {deleting ? <Spinner className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}
+        {deleting ? <Spinner className="w-3.5 h-3.5" /> : <TrashIcon className="w-3.5 h-3.5" />}
       </button>
     </div>
   );
@@ -334,21 +309,21 @@ function FolderCard({ folder, gradient, isRoot, deleting, onOpen, onDelete }) {
 
 function DocumentCard({ doc, onOpen, onDelete }) {
   return (
-    <div className="group bg-slate-900 border border-slate-850 rounded-2xl p-5 shadow-sm hover:border-indigo-500/50 hover:shadow-md hover:shadow-indigo-500/5 transition-all">
+    <div className="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-4 shadow-sm transition-all duration-150">
       <div className="flex items-start justify-between mb-3">
         <div
           role="button"
           tabIndex={0}
           onClick={onOpen}
           onKeyDown={(e) => e.key === "Enter" && onOpen()}
-          className="w-12 h-12 rounded-xl bg-blue-950/40 flex items-center justify-center cursor-pointer"
+          className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 cursor-pointer"
         >
-          <DocIcon className="w-6 h-6 text-blue-400" />
+          <DocIcon className="w-5 h-5" />
         </div>
         <button
           type="button"
           onClick={onDelete}
-          className="text-slate-500 hover:text-red-400 hover:bg-red-950/30 rounded-lg p-1.5 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+          className="text-slate-500 hover:text-red-400 hover:bg-slate-800 rounded-lg p-1.5 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
           title="Delete document"
         >
           <TrashIcon className="w-4 h-4" />
@@ -361,8 +336,8 @@ function DocumentCard({ doc, onOpen, onDelete }) {
         onKeyDown={(e) => e.key === "Enter" && onOpen()}
         className="cursor-pointer"
       >
-        <div className="font-semibold text-slate-200 truncate">{doc.name}</div>
-        <div className="text-xs text-slate-500 mt-1">
+        <div className="font-semibold text-slate-100 text-sm truncate tracking-tight">{doc.name}</div>
+        <div className="text-xs text-slate-400 mt-1">
           {doc.flashcardCount > 0 && `${doc.flashcardCount} cards · `}
           {new Date(doc.createdAt).toLocaleDateString()}
         </div>

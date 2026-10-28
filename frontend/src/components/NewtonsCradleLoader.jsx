@@ -45,7 +45,7 @@ export default function NewtonsCradleLoader({
             style={{ transformOrigin: "top center" }}
           >
             <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
-            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-b from-slate-200 via-slate-400 to-slate-600 border border-slate-700 shadow-sm shrink-0">
               <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function NewtonsCradleLoader({
             style={{ transformOrigin: "top center" }}
           >
             <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
-            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-b from-slate-200 via-slate-400 to-slate-600 border border-slate-700 shadow-sm shrink-0">
               <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function NewtonsCradleLoader({
             style={{ transformOrigin: "top center" }}
           >
             <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
-            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-b from-slate-200 via-slate-400 to-slate-600 border border-slate-700 shadow-sm shrink-0">
               <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function NewtonsCradleLoader({
             style={{ transformOrigin: "top center" }}
           >
             <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
-            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-b from-slate-200 via-slate-400 to-slate-600 border border-slate-700 shadow-sm shrink-0">
               <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
             </div>
           </div>
@@ -89,14 +89,14 @@ export default function NewtonsCradleLoader({
             style={{ transformOrigin: "top center" }}
           >
             <div className="w-[1.5px] h-[92px] bg-slate-500/80" />
-            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-br from-sky-300 via-sky-500 to-sky-700 border border-sky-950 shadow-[0_0_12px_rgba(14,165,233,0.55)] shrink-0">
+            <div className="relative w-[28px] h-[28px] rounded-full bg-gradient-to-b from-slate-200 via-slate-400 to-slate-600 border border-slate-700 shadow-sm shrink-0">
               <div className="absolute top-1 left-1.5 w-1.5 h-1.5 rounded-full bg-white/70" />
             </div>
           </div>
         </div>
 
         {/* Dynamic Ground Shadow */}
-        <div className="w-36 h-2 rounded-full bg-cyan-500/15 blur-[3px] animate-cradle-shadow mt-1" />
+        <div className="w-36 h-2 rounded-full bg-black/40 blur-[2px] animate-cradle-shadow mt-1" />
 
         {/* Text & Underline matching the reference */}
         <div className="flex flex-col items-center mt-3">
