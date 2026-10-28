@@ -178,6 +178,13 @@ export const createFolder = async (req, res) => {
     const parts = path.split("/").filter(Boolean);
     const name = parts[parts.length - 1] || "/";
     const parent = parts.length > 1 ? `/${parts.slice(0, -1).join("/")}` : "/";
+
+    if (parent !== "/") {
+      const parentExists = await Folder.exists({ userId: req.user.id, path: parent });
+      if (!parentExists) {
+        return res.status(400).json({ error: "Parent folder does not exist." });
+      }
+    }
     
     const existing = await Folder.findOne({ userId: req.user.id, path });
     if (existing) return res.status(400).json({ error: "Folder already exists" });

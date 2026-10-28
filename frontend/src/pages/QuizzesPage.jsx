@@ -81,19 +81,35 @@ export default function QuizzesPage() {
 
   useEffect(() => {
     let mounted = true;
-    Promise.all([listFolders("/", true), listDocuments(1, 100, "/", true)])
-      .then(([fData, dData]) => {
-        if (mounted) {
-          setFolders(fData.folders || []);
-          setAllDocs(dData.documents || []);
+
+    async function loadAllData() {
+      try {
+        const fData = await listFolders("/", true);
+        if (!mounted) return;
+        setFolders(fData.folders || []);
+
+        let allDocuments = [];
+        let page = 1;
+        let hasMore = true;
+        while (hasMore) {
+          const dData = await listDocuments(page, 50, "/", true);
+          allDocuments = allDocuments.concat(dData.documents || []);
+          hasMore = dData.hasMore;
+          page += 1;
         }
-      })
-      .catch(() => {
+
+        if (mounted) {
+          setAllDocs(allDocuments);
+        }
+      } catch {
         if (mounted) {
           setFolders([]);
           setAllDocs([]);
         }
-      });
+      }
+    }
+
+    loadAllData();
     return () => {
       mounted = false;
     };

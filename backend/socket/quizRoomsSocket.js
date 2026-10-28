@@ -69,6 +69,9 @@ export function attachQuizRoomsSocket(server) {
               const currentRoom = await QuizRoom.findOne({ code: room.code });
               if (currentRoom && currentRoom.status === "active") {
                 currentRoom.status = "finished";
+                currentRoom.players.forEach((p) => {
+                  if (!p.submittedAt) p.submittedAt = new Date();
+                });
                 await currentRoom.save();
                 await emitRoomUpdate(io, room.code);
               }
@@ -145,9 +148,13 @@ export function attachQuizRoomsSocket(server) {
           player.submittedAt = new Date();
         }
 
-        if (room.players.length > 0 && room.players.every((p) => p.submittedAt)) {
-          room.status = "finished";
-        }
+        // Host has explicitly ended the quiz: mark room finished and finalize all players
+        room.status = "finished";
+        room.players.forEach((p) => {
+          if (!p.submittedAt) {
+            p.submittedAt = new Date();
+          }
+        });
 
         await room.save();
 
